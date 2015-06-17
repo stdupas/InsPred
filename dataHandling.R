@@ -82,6 +82,7 @@ nc2EnvDataAndRasterStack <- function(ncDirectory=paste(wd,"ForwardSimulData/",se
   list(EnvData,rasterStackAgg)
 }
 
+# try to remove this function if not used (we use parentSizeFill instead)
 releaseFill <- function(rasterStack,startDate,stopDate)
 {
   release=as.data.frame(xyFromCell(rasterStack,1:ncell(rasterStack)))
@@ -91,6 +92,13 @@ releaseFill <- function(rasterStack,startDate,stopDate)
   release$size=1
   release$demeNb <-  cellFromXY(object = rasterStack, xy = release[, c("x", "y")])
   release
+}
+
+parentSizeFill <- function(rasterStack,startDate,stopDate,maxDates)
+{
+  parentSizeDates <- as.Date(as.Date(startDate):as.Date(maxDates),origin="1970-01-01")
+  parentSize=array(0,dim=c(ncell(rasterStack),length(parentSizeDates)),dimnames=list(1:ncell(rasterStack),as.character(parentSizeDates)))
+  parentSize[,as.character(as.Date(as.Date(startDate):as.Date(stopDate),origin="1970-01-01"))] <- 1
 }
 
 aggregation <- function(df,BY,methodes)
@@ -179,3 +187,51 @@ aggregateDays = function(data, nbDays, Dates) {
   
   return(dataNew)
 }
+
+distanceMatrixFromRaster2 =
+  function(object){
+    # Computes a pairwise distance matrix from a raster object
+    #
+    # Args:
+    #   object: a raster object from which computes distances
+    #
+    # Returns:
+    #   A matrix of distances in meters if a coordinate system is precised
+    
+    # Extract coordinates from raster object
+    coords = xyFromCell(object = object, cell = 1:ncell(object), spatial=FALSE)
+    lat = coords[,1]
+    lon = coords[,2]
+    # Compute distance matrix
+    dist = NULL
+    for(i in 1:length(lat)) {
+      res = NULL
+      for(j in 1:length(lon)) {
+        res = c(res,sphericDistance(lat[i],lat[j],lon[i],lon[j]))
+      }
+      dist = rbind(dist,res)
+    }
+    return(dist)
+  }
+
+sphericDistance <- function (lat1, lat2, lon1, lon2) 
+{
+  if (lat1 == lat2 & lon1 == lon2) 
+    distance <- 0
+  else {
+    rlat1 = radian(lat1)
+    rlat2 = radian(lat2)
+    rlon = radian(lon2 - lon1)
+    distance <- 60 * (180/pi) * acos(sin(rlat1) * sin(rlat2) + 
+                                       cos(rlat1) * cos(rlat2) * cos(rlon))
+    distance <- distance * 1852/1000
+  }
+  distance
+}
+
+radian <- function (degree) 
+{
+  radian <- degree * (pi/180)
+  radian
+}
+

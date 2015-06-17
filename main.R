@@ -17,19 +17,26 @@ rasterStack <- EnvDataRasterStack[[2]]
 EnvData <- EnvDataRasterStack[[1]]
 rm(EnvDataRasterStack)
 
-####### release data (one individual per cell between 1998/01/01 and 1998/06/01)
+####### release data (one individual per cell between 1998/01/01 and 1998/05/31)
 
-release <- releaseFill(rasterStack,startDate="1998/01/01",stopDate="1998/06/01")
+# number of days averaged to calculate maize health
+nDaysAveraged = 10
 
-## Recovery
+burningPeriodDuration = 150
+
+## Recovery, reading and formating for analysis (colnames, and temporal range)
 
 recovery <- read.table("../dataForwardKenya/Stemborer_Kenya2001_2005.csv")
 recovery <- formatAbundanceData(recovery,col_names=c(x="Long_dec",y="Lat_dec",birthDate="Diss_Date",size="B._fusca",sampling_effort="no._plants"),maxDate="2003/12/31")
 dim(recovery)
 
-
-
-minDates = min(release$birthDate)
 maxDates = min(max(recovery$birthDate),max(as.Date(colnames(EnvData))))
-Dates <- as.Date(as.Date(minDates):as.Date(maxDates),origin="1970/01/01")
+#Dates <- as.Date(as.Date(minDates):as.Date(maxDates),origin="1970/01/01")
+#release <- releaseFill(rasterStack,startDate=colnames(EnvData)[nDaysAveraged],stopDate="1998/05/31") # remove releaseFill if useless
+parentSize <- parentSizeFill(rasterStack,startDate=colnames(EnvData)[nDaysAveraged],stopDate=colnames(EnvData)[burningPeriodDuration],maxDates=maxDates)
+recoverySize <- 
+
+#Calcul de la distance en km entre deux demes à partir de leurs coordonées
+
+distMat <- distanceMatrixFromRaster2(object = rasterStack)
 
