@@ -94,11 +94,26 @@ releaseFill <- function(rasterStack,startDate,stopDate)
   release
 }
 
-parentSizeFill <- function(rasterStack,startDate,stopDate,maxDates)
+parentSizeFill <- function(rasterStack,EnvData,startComputingDate,stopBurningDate,stopComputingDate)
 {
-  parentSizeDates <- as.Date(as.Date(startDate):as.Date(maxDates),origin="1970-01-01")
+  parentSizeDates <- as.Date(as.Date(startComputingDate):as.Date(stopComputingDate),origin="1970-01-01")
+  parentSize=array(0,dim=c(ncell(rasterStack),length(parentSizeDates)),dimnames=list(1:ncell(rasterStack),as.character(parentSizeDates)))
+  parentSize[,as.character(as.Date(as.Date(startComputingDate):as.Date(stopBurningDate),origin="1970-01-01"))] <- 1
+  parentSize
+}
+
+# to be removed (not useful at the moment) not finished
+recoverySizeFill <- function(recoveryfile = read.table("../dataForwardKenya/Stemborer_Kenya2001_2005.csv"),
+                             col_names = c(x="Long_dec",y="Lat_dec",birthDate="Diss_Date",size="B._fusca",sampling_effort="no._plants"),
+                             startDate,
+                             maxDate="2003/12/31"
+                             )
+{
+  recovery <- formatAbundanceData(Datarecoveryfile,col_names,maxDate)
+  recoverySizeDates <- as.Date(as.Date(startDate):as.Date(maxDate),origin="1970-01-01")
   parentSize=array(0,dim=c(ncell(rasterStack),length(parentSizeDates)),dimnames=list(1:ncell(rasterStack),as.character(parentSizeDates)))
   parentSize[,as.character(as.Date(as.Date(startDate):as.Date(stopDate),origin="1970-01-01"))] <- 1
+  parentSize
 }
 
 aggregation <- function(df,BY,methodes)
@@ -140,7 +155,9 @@ aggregation <- function(df,BY,methodes)
   return(df_return[,-ncol(df_return)])
 }
 
-formatAbundanceData <- function(recovery,col_names=c(x="Long_dec",y="Lat_dec",birthDate="Diss_Date",size="B._fusca",sampling_effort="no._plants"),maxDate="2003/12/31")
+formatAbundanceData <- function(recovery,
+                                col_names=c(x="Long_dec",y="Lat_dec",birthDate="Diss_Date",size="B._fusca",sampling_effort="no._plants"),
+                                maxDate="2003/12/31")
 {
   recovery <- recovery[,col_names];dim(recovery)
   colnames(recovery) <- names(col_names)
@@ -153,40 +170,21 @@ formatAbundanceData <- function(recovery,col_names=c(x="Long_dec",y="Lat_dec",bi
 recovery  
 }
 
-computeMeanEnvData = function(data, var, nbDays) {
+computeMeanEnvData = function(data, vars, nbDays) {
   dataOld = data
-  for(d in 1:length(data[,1,var])) {
-    for(i in (nbDays+1):length(data[d,,var])) {
-      m = mean(dataOld[d,(i-nbDays):(i-1),var])
-      data[d,i,var] = m
+  for(d in 1:length(data[,1,vars[1]])) {
+    for(i in (nbDays+1):length(data[d,,vars[1]])) {
+      for (var in vars) {
+        m = mean(dataOld[d,(i-nbDays):(i-1),var])
+        data[d,i,var] = m
+      }
     }
   }
   return(data)
 }
 
 
-aggregateDays = function(data, nbDays, Dates) {
-  nbDates = round(length(Dates)/nbDays)-1
-  dataNew = array(0, dim=c(dim(data)[1],nbDates,dim(data)[3]))
-  # pour chaque couche
-  for(c in 1:dim(data)[3]) {
-    # pour chaque deme
-    for(d in 1:dim(data)[1]) {
-      j = 1
-      # pour toutes les nbDays dates
-      for(i in seq(nbDays,length(Dates),by=nbDays)) {
-        m = mean(data[d,(i-nbDays+1):i,c])
-        dataNew[d,j,c] = m
-        j = j+1
-      }
-    }
-  }
-  dimnames(dataNew)[1] = dimnames(data)[1]
-  dimnames(dataNew)[2] = dimnames(data[,seq(nbDays,length(Dates),by=nbDays),])[2]
-  dimnames(dataNew)[3] = dimnames(data)[3]
-  
-  return(dataNew)
-}
+data2 <- array(data[])
 
 distanceMatrixFromRaster2 =
   function(object){
