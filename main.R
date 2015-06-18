@@ -50,7 +50,10 @@ parentSize <- parentSizeFill(rasterStack,
 
 distMat <- distanceMatrixFromRaster2(object = rasterStack)
 
+# on calcule la moyenne sur les nDaysAveraged précedents jours
+EnvDataAveraged <- computeMeanEnvData(EnvData, vars=c("Rainf","Tmin","Tmax"), nDaysAveraged)
+
 #On récupère les dates d'interêt seulement.
-EnvData <- EnvData[,colnames(parentSize),]
-#On fait la moyenne des precipitations sur les derniers jours
-EnvDataAveraged = computeMeanEnvData(EnvData, vars=c("Rainf","Tmin","Tmax"), nDaysAveraged)
+EnvData2 <- EnvData[,colnames(parentSize),]
+EnvDataAveraged <- EnvDataAveraged[,colnames(parentSize),]
+

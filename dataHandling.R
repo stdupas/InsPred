@@ -183,8 +183,17 @@ computeMeanEnvData = function(data, vars, nbDays) {
   return(data)
 }
 
+computeMeanEnvData = function(data, vars, nbDays) {
+  dataStacked <- array(data[,nbDays:dim(EnvData)[2],],
+                       dim=c(dim(data)[1],dim(data)[2]-nbDays+1,dim(data)[3],nbDays),
+                       dimnames=list(dimnames(data)[[1]],dimnames(data)[[2]][nbDays:dim(data)[2]],dimnames(data)[[3]],1:nbDays))
+  for (Day in 1:nbDays)
+  {
+    dataStacked[,,,Day] <- data[,Day:(dim(data)[2]-nbDays+Day),]
+  }
+  dataSum <- rowMeans(dataStacked,na.rm=TRUE,dims=3)
+}
 
-data2 <- array(data[])
 
 distanceMatrixFromRaster2 =
   function(object){
