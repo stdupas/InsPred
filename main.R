@@ -7,6 +7,7 @@ library(raster) # library to manage raster format data
 # Read RnetCDF data
 source("dataHandling.R") # functions to handle data (read netCDF, create burning period, aggregate tables)
 source("inference.R") # calculates and sample posterior using data and prior information
+source("dispersionFunctions.R") # calculates and sample posterior using data and prior information
 
 EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/",aggregationParam=1)
 saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
