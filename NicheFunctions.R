@@ -20,3 +20,29 @@ conquadraticSkewed1 <- function(x, Xmin, Xmax, Xopt, Yopt)
   y <- -4*Yopt/(Xmax-Xmin)^2*(Xprime-Xmax)*(Xprime-Xmin)*(x<=Xmax)*(x>=Xmin)
   return(y)
 }
+
+
+developmentRateLogan <- function(T,species,life_stage)
+{
+  parameters <- switch (species,
+                        Bf = switch (life_stage,
+                                     Egg = c(logan4)
+                                     Larvae = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=1.654)
+                        ),
+                        Sc = switch (life_stage,
+                                     Egg = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     Larvae = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=1.654)
+                        ),
+                        Cp = switch (life_stage,
+                                     Egg = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     Larvae = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=1.654)
+                        ),
+  )
+  if (species == "Bf")&(life_stage=="Egg") {r <- } else {
+    r <-  parameters["Y"]*(exp(parameters["Rho"]*T)-exp(paramters["Rho"]*parameters["Tmax"]))
+  }
+  r
+}
