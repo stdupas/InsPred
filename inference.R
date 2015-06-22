@@ -117,7 +117,7 @@ expectedInd.2 <- function(parameters){
   
   # Affectation des valeurs pour la migration, 
   # le temps de developpement et le temps de generation
-  dispersionRate = .025;dispersionDistance=300;      
+  dispersionRate = .025;  dispersionDistance=300;      
   
   generationTime = ceiling(25/10);
   generationTimeSD=ceiling(3/10);    
@@ -131,7 +131,10 @@ expectedInd.2 <- function(parameters){
   
   
   # Matrice des individus à l'intérieur des mais.
-  larveSizes <- array(0,dim=c(nrow(EnvData2),(ncol(EnvData2)),dimnames = list(1:nrow(EnvData2),colnames(EnvData2)))
+  larveSizes <- array(data = 0,
+                      dim = c( nrow(EnvData2), ncol(EnvData2)),
+                      dimnames = list(as.character(1:nrow(EnvData2)), colnames(EnvData2))
+                      )
   
   # Matrice de migration
   migrationMatrix = migrationRateMatrix(fatTail1(distMat,100,2))

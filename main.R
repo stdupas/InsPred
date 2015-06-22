@@ -1,4 +1,4 @@
-setwd("/home/dupas/forwardKenya/")
+setwd("/home/egce/Bureau/Ludivine/forwardKenya/")
 library(RNetCDF) # for nc2EnvDataAndRasterStack function (readNetCDF.R script), to read NetCDF formatted data
 library(raster) # library to manage raster format data 
 
@@ -13,7 +13,7 @@ EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/"
 saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
 
 #Lecture des données déjà aggrégées. Gain de temps
-# EnvDataRasterStack = readRDS("../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
+#EnvDataRasterStack = readRDS("../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
 
 rasterStack <- EnvDataRasterStack[[2]]
 EnvData <- EnvDataRasterStack[[1]]
@@ -23,7 +23,7 @@ rm(EnvDataRasterStack)
 
 # number of days averaged to calculate maize health
 nDaysAveraged = 10
-# number of days for buning period
+# number of days for burning period
 burningPeriodDuration = 150
 
 stopBurningDate=colnames(EnvData)[burningPeriodDuration]
@@ -47,7 +47,7 @@ parentSize <- parentSizeFill(rasterStack,
                              stopBurningDate=stopBurningDate,
                              stopComputingDate=stopComputingDate)
 
-#Calcul de la distance en km entre deux demes à partir de leurs coordonées
+#Calcul de la distance en km entre deux demes à partir de leurs coordonnées
 
 distMat <- distanceMatrixFromRaster2(object = rasterStack)
 
