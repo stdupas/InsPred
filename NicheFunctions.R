@@ -26,7 +26,7 @@ developmentRateLogan <- function(T,species,life_stage)
 {
   parameters <- switch (species,
                         Bf = switch (life_stage,
-                                     Egg = c(alpha=117.33, k=3474.17, b=0.13, Tmin=4.54, Tmax=56.78, dt=6.22),
+                                     Egg = c(Y=0.0093744,Tmax=31.8519816,rho=0.1165808,V=2.3537414),
                                      Larvae = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
                                      Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=5.227)
                         ),
@@ -41,9 +41,26 @@ developmentRateLogan <- function(T,species,life_stage)
                                      Pupae = c(Y=0.02,Tmax=38.04,rho=0.17,V=5.65)
                         )
   )
-  if ((species == "Bf") & (life_stage == "Egg")) {r <- parameters["alpha"]*((1/(1+parameters["k"]*exp(-parameters["b"]*(T-parameters["Tmin"]))))-exp((parameters["Tmax"]-(T-parameters["Tmin"]))/parameters["dt"]))} else {
-    r <-  parameters["Y"]*(exp(parameters["rho"]*T)-exp(parameters["rho"]*parameters["Tmax"]-((parameters["Tmax"]-T)/parameters["V"])))
-  }
+  r <-  parameters["Y"]*(exp(parameters["rho"]*T)-exp(parameters["rho"]*parameters["Tmax"]-((parameters["Tmax"]-T)/parameters["V"])))
   r
 }
 
+developmentTime <- function(developmentRate)
+{
+  DevTimeArray <- array(0,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
+  for (Day in 1:ncol(developmentRate))
+  {
+    day=0
+    DevRateSum=developmentRate[,Day]/2;day=0
+    DevTime=rep(0,nrow(developmentRate))
+    while (any(DevRateSum<1))
+    {
+      day<-day+1
+      DevTime[(DevRateSum<1)] <- DevTime[(DevRateSum<1)]+1
+      DevRateSum2 <- DevRateSum+(developmentRate[,Day+day])*(DevRateSum<1)
+      DevTime[(DevRateSum2>1)&(DevRateSum<1)] <- DevTime[(DevRateSum2>1)&(DevRateSum<1)]-(DevRateSum2-1)/developmentRate[,Day+day]
+    }
+    DevTimeArray[,Day] <- DevTime
+  }
+DevTimeArray
+}

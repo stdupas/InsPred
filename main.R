@@ -56,5 +56,11 @@ EnvDataAveraged <- computeMeanEnvData(EnvData, vars=c("Rainf","Tmin","Tmax"), nD
 
 #On récupère les dates d'interêt seulement.
 EnvData2 <- EnvData[,colnames(parentSize),]
+Tmean <- (EnvData2[,,2]+EnvData2[,,3])/2 -273.15
+DevRateEgg <- developmentRateLogan(Tmean,species="Bf",life_stage="Egg")
+DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="Larvae")
+DevRatePup <- developmentRateLogan(Tmean,species="Bf",life_stage="Pupae")
+
+
 EnvDataAveraged <- EnvDataAveraged[,colnames(parentSize),]
 

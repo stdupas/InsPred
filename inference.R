@@ -117,6 +117,7 @@ expectedInd.2 <- function(parameters){
   
   # Affectation des valeurs pour la migration, 
   # le temps de developpement et le temps de generation
+  
   dispersionRate = .025;  dispersionDistance=300;      
   
   generationTime = ceiling(25/10);
