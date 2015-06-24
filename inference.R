@@ -3,20 +3,39 @@ inference <- function(parameters, EnvData, parentSize, recoverySize)
   
 }
 
-expectedInd.1 <- function(
-  K.pr.Xmin=0.5, K.pr.Xmax=10, K.pr.Xopt=4, K.pr.Yopt=20,
-  R.pr.Xmin=0.5, R.pr.Xmax=10, R.pr.Xopt=4, R.pr.Yopt=10,
-  R.tas.Xmin=285, R.tas.Xmax=305, R.tas.Xopt=295, R.tas.Yopt=1){
+expectedInd.2 <- function(parameters){
   # Fonction qui calcule le nombre d'individus attendus
+  # Hypothèse : 
+  # Temps de développement : réponse linéaire décroissante au Tmin
+  # Carrying capacity K : nombre de larves maximales hébergées par une plante en phase foreur réponse quadratique skewed à Tmin, Tmax et rainf
+  # taux de croissance r : nombre d'oeufs déposés par adulte qui survivent à la phase phylophage, réponse quadratique skewed à Rainf
+  # modèle de migration des adultes : chaque jour une dispersion suivant un modèle fat tail 1 fonction de la distance
+  #
+  #
+  #
   # Variables: 
-  #           K.pr: parametres pour la fonction K=f(precipitation)
-  #           R.pr: parametres pour la fonction R=f(precipitation)
-  #           R.tas: parametres pour la fonction R=f(temperature)
+  # parameters = c(r0=10,r.Rainf.Xmin=,r.Rainf.Xmax=,r.Rainf.Xopt=,r.Rainf.Yopt=,
+  #                K.Rainf.Xmin=,K.Rainf.Xmax=,K.Rainf.Xopt=,K.Rainf.Yopt=,
+  #                K.Tminf.Xmin=,K.Tmin.Xmax=,K.Tmin.Xopt=,K.Tmin.Yopt=,
+  #                K.Tmax.Xmin=,K.Tmax.Xmax=,K.Tmax.Xopt=,K.Tmax.Yopt=,
+  #                disp.D.alpha=,disp.D.beta=)
+  #
   
+  
+  # Survival arrays eggs, phyloLarvae, and pupae (do not depend of density, only of parameters)
+  
+  # times to
+  devRateEggs <- developmentRateLogan(EnvData[,,"Tmean"],"Bf","Egg")
+  devTimeEggs <- developmentTime(devRateEggs)
+  
+  # Egg laying
+  
+  EggLayed
   
   # Affectation des valeurs pour la migration, 
   # le temps de developpement et le temps de generation
-  dispersionRate = .025;dispersionDistance=300;      
+  
+  dispersionRate = .025;  dispersionDistance=300;      
   
   generationTime = ceiling(25/10);
   generationTimeSD=ceiling(3/10);    
@@ -30,10 +49,14 @@ expectedInd.1 <- function(
   
   
   # Matrice des individus à l'intérieur des mais.
-  larveSizes <- array(0,dim=c(nrow(EnvData2),length(Dates)),dimnames = list(1:nrow(EnvData2),as.character(Dates)))
+  larveSizes <- array(data = 0,
+                      dim = c( nrow(EnvData2), ncol(EnvData2)),
+                      dimnames = list(as.character(1:nrow(EnvData2)), colnames(EnvData2))
+  )
   
   # Matrice de migration
-  migrationMatrix = Matrix(0, nrow = dim(distMat)[1], ncol = dim(distMat)[2], sparse = TRUE)
+  migrationMatrix = migrationRateMatrix(fatTail1(distMat,100,2))
+  
   ind1 = which((distMat != 0) & (distMat < dispersionDistance))
   ind2 = which(distMat == 0)
   
@@ -94,31 +117,20 @@ expectedInd.1 <- function(
   return(larveSizes)
 }
 
-expectedInd.2 <- function(parameters){
+expectedInd.1 <- function(
+  K.pr.Xmin=0.5, K.pr.Xmax=10, K.pr.Xopt=4, K.pr.Yopt=20,
+  R.pr.Xmin=0.5, R.pr.Xmax=10, R.pr.Xopt=4, R.pr.Yopt=10,
+  R.tas.Xmin=285, R.tas.Xmax=305, R.tas.Xopt=295, R.tas.Yopt=1){
   # Fonction qui calcule le nombre d'individus attendus
-  # Hypothèse : 
-  # Temps de développement : réponse linéaire décroissante au Tmin
-  # Carrying capacity K : nombre de larves maximales hébergées par une plante en phase foreur réponse quadratique skewed à Tmin, Tmax et rainf
-  # taux de croissance r : nombre d'oeufs déposés par adulte qui survivent à la phase phylophage, réponse quadratique skewed à Rainf
-  # modèle de migration des adultes : chaque jour une dispersion suivant un modèle fat tail 1 fonction de la distance
-  #
-  #
-  #
   # Variables: 
-  # parameters = c(r.Rainf.Xmin=,r.Rainf.Xmax=,r.Rainf.Xopt=,r.Rainf.Yopt=,
-  #                K.Rainf.Xmin=,K.Rainf.Xmax=,K.Rainf.Xopt=,K.Rainf.Yopt=,
-  #                K.Tminf.Xmin=,K.Tmin.Xmax=,K.Tmin.Xopt=,K.Tmin.Yopt=,
-  #                K.Tmax.Xmin=,K.Tmax.Xmax=,K.Tmax.Xopt=,K.Tmax.Yopt=,
-  #                disp.D.alpha=,disp.D.beta=,
-  #                tdevt.Tmin.Y0,tdevt.Tmin.Y40)
-  #
-
+  #           K.pr: parametres pour la fonction K=f(precipitation)
+  #           R.pr: parametres pour la fonction R=f(precipitation)
+  #           R.tas: parametres pour la fonction R=f(temperature)
   
   
   # Affectation des valeurs pour la migration, 
   # le temps de developpement et le temps de generation
-  
-  dispersionRate = .025;  dispersionDistance=300;      
+  dispersionRate = .025;dispersionDistance=300;      
   
   generationTime = ceiling(25/10);
   generationTimeSD=ceiling(3/10);    
@@ -132,14 +144,10 @@ expectedInd.2 <- function(parameters){
   
   
   # Matrice des individus à l'intérieur des mais.
-  larveSizes <- array(data = 0,
-                      dim = c( nrow(EnvData2), ncol(EnvData2)),
-                      dimnames = list(as.character(1:nrow(EnvData2)), colnames(EnvData2))
-                      )
+  larveSizes <- array(0,dim=c(nrow(EnvData2),length(Dates)),dimnames = list(1:nrow(EnvData2),as.character(Dates)))
   
   # Matrice de migration
-  migrationMatrix = migrationRateMatrix(fatTail1(distMat,100,2))
-  
+  migrationMatrix = Matrix(0, nrow = dim(distMat)[1], ncol = dim(distMat)[2], sparse = TRUE)
   ind1 = which((distMat != 0) & (distMat < dispersionDistance))
   ind2 = which(distMat == 0)
   

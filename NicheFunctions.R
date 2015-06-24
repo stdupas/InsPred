@@ -27,17 +27,20 @@ developmentRateLogan <- function(T,species,life_stage)
   parameters <- switch (species,
                         Bf = switch (life_stage,
                                      Egg = c(Y=0.0093744,Tmax=31.8519816,rho=0.1165808,V=2.3537414),
-                                     Larvae = c(Y=0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     phyloLarvae = c(Y=3*0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                     stemLarvae = c(Y=1.5*0.001,Tmax=31.229,rho=0.116,V=1.654),
                                      Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=5.227)
                         ),
                         Sc = switch (life_stage,
                                      Egg = c(Y=0.010,Tmax=31.93,rho=0.110,V=1.786),
-                                     Larvae = c(Y=0.002,Tmax=35.79,rho=0.150,V=5.695),
+                                     phyloLarvae = c(Y=3*0.002,Tmax=35.79,rho=0.150,V=5.695),
+                                     stemLarvae = c(Y=1.5*0.002,Tmax=35.79,rho=0.150,V=5.695),
                                      Pupae = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
                         ),
                         Cp = switch (life_stage,
                                      Egg = c(Y=0.015,Tmax=38.92,rho=0.155,V=5.766),
-                                     Larvae = c(Y=0.003,Tmax=37.58,rho=0.17,V=5.51),
+                                     phyloLarvae = c(Y=3*0.003,Tmax=37.58,rho=0.17,V=5.51),
+                                     stemLarvae = c(Y=1.5*0.003,Tmax=37.58,rho=0.17,V=5.51),
                                      Pupae = c(Y=0.02,Tmax=38.04,rho=0.17,V=5.65)
                         )
   )
@@ -45,7 +48,8 @@ developmentRateLogan <- function(T,species,life_stage)
   r
 }
 
-developmentTime <- function(developmentRate)
+######## TO BE REMOVED ###################
+developmentTime <- function(developmentRate) ######## TO BE REMOVED ###################
 {
   DevTimeArray <- array(0,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
   for (Day in 1:ncol(developmentRate))
@@ -63,4 +67,24 @@ developmentTime <- function(developmentRate)
     DevTimeArray[,Day] <- DevTime
   }
 DevTimeArray
+}
+
+######## GOOD ONE ###################
+developmentTime <- function(developmentRate)
+{
+  cumRate <- developmentRate
+  devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
+  for (Day in 1:ncol(developmentRate))
+  {
+    j=1
+    while (any(na.omit(cumRate[,Day]<1))&(Day-j>0))
+      {
+      NotDevelopped <- (cumRate[,Day]<1)
+      cumRate[,Day] <- cumRate[,Day] + developmentRate[,Day-j]
+      NewlyDevelopped <- (cumRate[NotDevelopped,Day]>=1)
+      devTime[NewlyDevelopped,Day] <- j
+      j=j+1
+      }
+  }
+devTime  
 }

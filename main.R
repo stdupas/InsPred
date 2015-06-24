@@ -1,4 +1,5 @@
 setwd("/home/egce/Bureau/Ludivine/forwardKenya/")
+setwd("/home/dupas/forwardKenya/")
 library(RNetCDF) # for nc2EnvDataAndRasterStack function (readNetCDF.R script), to read NetCDF formatted data
 library(raster) # library to manage raster format data 
 
@@ -8,6 +9,7 @@ library(raster) # library to manage raster format data
 source("dataHandling.R") # functions to handle data (read netCDF, create burning period, aggregate tables)
 source("inference.R") # calculates and sample posterior using data and prior information
 source("dispersionFunctions.R") # calculates and sample posterior using data and prior information
+source("NicheFunctions.R") # calculates and sample posterior using data and prior information
 
 EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/",aggregationParam=1)
 saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
@@ -17,6 +19,10 @@ saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_19
 
 rasterStack <- EnvDataRasterStack[[2]]
 EnvData <- EnvDataRasterStack[[1]]
+Dimnames <- dimnames(EnvData); Dimnames[[3]] <- append(Dimnames[[3]],"Tmean")
+EnvData <- array(EnvData,dim=c(length(Dimnames[[1]]),length(Dimnames[[2]]),length(Dimnames[[3]])),dimnames=Dimnames)
+EnvData[,,c("Tmin","Tmax")] <- EnvData[,,c("Tmin","Tmax")] - 273.15
+EnvData[,,c("Tmean")] <- (EnvData[,,"Tmin"]+ EnvData[,,"Tmax"])/2
 rm(EnvDataRasterStack)
 
 ####### release data (one individual per cell between 1998/01/01 and 1998/05/31)
@@ -41,7 +47,7 @@ recovery <- formatAbundanceData(read.table("../dataForwardKenya/Stemborer_Kenya2
 dim(recovery)
 stopComputingDate = min(max(recovery$birthDate),max(as.Date(colnames(EnvData))))
 
-parentSize <- parentSizeFill(rasterStack,
+adultSize <- parentSizeFill(rasterStack,
                              EnvData,
                              startComputingDate=startComputingDate,
                              stopBurningDate=stopBurningDate,
