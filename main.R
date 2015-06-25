@@ -47,7 +47,7 @@ recovery <- formatAbundanceData(read.table("../dataForwardKenya/Stemborer_Kenya2
 dim(recovery)
 stopComputingDate = min(max(recovery$birthDate),max(as.Date(colnames(EnvData))))
 
-adultSize <- parentSizeFill(rasterStack,
+parentSize <- parentSizeFill(rasterStack,
                              EnvData,
                              startComputingDate=startComputingDate,
                              stopBurningDate=stopBurningDate,
@@ -64,7 +64,8 @@ EnvDataAveraged <- computeMeanEnvData(EnvData, vars=c("Rainf","Tmin","Tmax"), nD
 EnvData2 <- EnvData[,colnames(parentSize),]
 Tmean <- (EnvData2[,,2]+EnvData2[,,3])/2 -273.15
 DevRateEgg <- developmentRateLogan(Tmean,species="Bf",life_stage="Egg")
-DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="Larvae")
+DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="phyloLarvae")
+DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="stemLarvae")
 DevRatePup <- developmentRateLogan(Tmean,species="Bf",life_stage="Pupae")
 
 
