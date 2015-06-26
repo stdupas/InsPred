@@ -2,7 +2,7 @@ setwd("/home/egce/Bureau/Ludivine/forwardKenya/")
 setwd("/home/dupas/forwardKenya/")
 library(RNetCDF) # for nc2EnvDataAndRasterStack function (readNetCDF.R script), to read NetCDF formatted data
 library(raster) # library to manage raster format data 
-
+library(rts)
 
 
 # Read RnetCDF data
@@ -10,7 +10,7 @@ source("dataHandling.R") # functions to handle data (read netCDF, create burning
 source("inference.R") # calculates and sample posterior using data and prior information
 source("dispersionFunctions.R") # calculates and sample posterior using data and prior information
 source("NicheFunctions.R") # calculates and sample posterior using data and prior information
-
+source("Classes/ModelFunction.R")
 EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/",aggregationParam=1)
 saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
 
@@ -71,3 +71,22 @@ DevRatePup <- developmentRateLogan(Tmean,species="Bf",life_stage="Pupae")
 
 EnvDataAveraged <- EnvDataAveraged[,colnames(parentSize),]
 
+# Model Implementation
+
+r.Rainf.Xmin.prior <- Function(fun = uniform, param = list(min = 0, max = 2))
+r.Rainf.Xmax.prior <- Function(fun = uniform, param = list(min = 2, max = 10))
+r.Rainf.Yopt.prior <- Function(fun = uniform, param = list(min = 5, max = 50))
+r.Rainf.Xopt.prior <- Function(fun = uniform, param = list(min = 0, max = 10))
+r.Rainf.Niche <- model(varEnv = EnvDataAveraged, 
+                       fun = Function(fun = conquadraticSkewed1, 
+                                      param = list(r.Rainf.Xmin.prior, 
+                                                   r.Rainf.Xmax.prior,
+                                                   r.Rainf.Yopt.prior,
+                                                   r.Rainf.Xopt.prior)))
+
+r.Rainf.Niche <- Function(fun = conquadraticSkewed1, param = list(x, 
+                                                                  Xmin=r.Rainf.Xmin.prior, 
+                                                                  Xmax=r.Rainf.Xmax.prior, 
+                                                                  Xopt=r.Rainf.Xopt.prior, 
+                                                                  Yopt=r.Rainf.Yopt.prior, 
+                                                                  ))

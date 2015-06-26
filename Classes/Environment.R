@@ -1,0 +1,4 @@
+setClass("Environnement",
+         contains = "VIRTUAL"
+         )
+
