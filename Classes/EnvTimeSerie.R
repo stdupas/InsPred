@@ -45,7 +45,7 @@ EnvTimeSerie <- function(x=list(matrix(NA),as.Date(1)))
     }
     x <- rts(x[[1]],x[[2]])
   }
-  if (class(x)=="character"){
+  f (class(x)=="character"){
     Dates <-   strsplit(ncFiles[1],"_")[[1]][length(strsplit(ncFiles[1],"_")[[1]])]
     Dates <- strsplit(strsplit(Dates,"[.]")[[1]][1],"-")[[1]]
     Dates <- data.frame(Annees = substr(Dates,1,4),mois = substr(Dates,5,6),jours = substr(Dates,7,8))
