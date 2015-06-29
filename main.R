@@ -1,3 +1,4 @@
+setwd("/Users/jean-francoissilvain/Documents/marc-fred/forwardKenya")
 setwd("/home/egce/Bureau/Ludivine/forwardKenya/")
 setwd("/home/dupas/forwardKenya/")
 library(RNetCDF) # for nc2EnvDataAndRasterStack function (readNetCDF.R script), to read NetCDF formatted data
