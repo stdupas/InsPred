@@ -20,13 +20,13 @@ ModelFunction <- function(name, fun, param){
   if(missing(fun)) stop("argument fun is missing")
   
   # if param is a list of numeric, it's ok
-  # if param is a list of Function, apply the function as a prior
+  # if param is a list of ModelFunction, apply the function as a prior
   areAllParamNum <- all(vapply(X = param, FUN = is.numeric, FUN.VALUE = c(FALSE)))
-  areAllParamFun <- all(vapply(X = param, FUN = function(x){class(x) == "Function"}, FUN.VALUE = c(FALSE)))
-  
+  areAllParamFun <- all(vapply(X = param, FUN = function(x){class(x) == "ModelFunction"}, FUN.VALUE = c(FALSE)))
+  areAllParamChar <- all(vapply(X = param, FUN = function(x){class(x) == "character"}, FUN.VALUE = c(FALSE)))
   if(areAllParamNum){
     # do nothing for param
-    new("Function", name = name, fun = fun, param = param )
+    new("ModelFunction", name = name, fun = fun, param = param )
     
   }else if(areAllParamFun){
     # perform sampling in the passed Functions acting as priors
@@ -36,13 +36,14 @@ ModelFunction <- function(name, fun, param){
                            param,
                            USE.NAMES = TRUE,
                            SIMPLIFY = FALSE)
-    new("Function", name = name, fun = fun, param = sampledParam)
-    
-  }else if(!areAllParamFun && !areAllParamNum){
-    stop("In Function Class, param argument has to be a list of numeric or a list of Function class")
+    new("ModelFunction", name = name, fun = fun, param = sampledParam)
+  }else if (areAllParamChar){
+    new("ModelFunction", name = name, fun = fun, param = param )
+  }else if(!areAllParamFun && !areAllParamNum && !areAllParamChar){
+    stop("In ModelFunction Class, param argument has to be a list of numeric or characters or a list of ModelFunction class")
   }
 }
-  
+
 setMethod("show", "ModelFunction",
           function(object){
             ToStream(object)
@@ -51,7 +52,7 @@ setMethod("show", "ModelFunction",
 setMethod(f="ToStream",
           signature = "ModelFunction",
           definition = function(object){        
-            cat("Function", object@name, "with parameters","\t")
+            cat("ModelFunction", object@name, "with parameters","\t")
             pnames <- lapply(X = 1:length(object@param),
                              FUN = function(x, l){ paste(names(l)[x], "=", l[x], sep ="")},
                              l = object@param)

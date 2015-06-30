@@ -11,7 +11,17 @@ source("dataHandling.R") # functions to handle data (read netCDF, create burning
 source("inference.R") # calculates and sample posterior using data and prior information
 source("dispersionFunctions.R") # calculates and sample posterior using data and prior information
 source("NicheFunctions.R") # calculates and sample posterior using data and prior information
+source("Classes/Generics.R")
+#source("Classes/AbstractModel.R")
 source("Classes/ModelFunction.R")
+source("Classes/Environment.R")
+source("Classes/EnvTimeSerie.R")
+
+Rainf <- EnvTimeSerie("../dataForwardKenya/Rainf_WFDEI_19980101-20031231.nc")
+Tmin <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmin_WFDEI_19980101-20031231.nc"),-273.15)
+Tmax <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmax_WFDEI_19980101-20031231.nc"),-273.15)
+Tmean <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmean_WFDEI_19980101-20031231.nc"),-273.15)
+
 EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/",aggregationParam=1)
 saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
 
@@ -74,12 +84,12 @@ EnvDataAveraged <- EnvDataAveraged[,colnames(parentSize),]
 
 # Model Implementation
 
-r.Rainf.Xmin.prior <- Function(fun = uniform, param = list(min = 0, max = 2))
-r.Rainf.Xmax.prior <- Function(fun = uniform, param = list(min = 2, max = 10))
-r.Rainf.Yopt.prior <- Function(fun = uniform, param = list(min = 5, max = 50))
-r.Rainf.Xopt.prior <- Function(fun = uniform, param = list(min = 0, max = 10))
+r.Rainf.Xmin.prior <- ModelFunction(fun = runif, param = list(min = 0, max = 2))
+r.Rainf.Xmax.prior <- ModelFunction(fun = uniform, param = list(min = 2, max = 10))
+r.Rainf.Yopt.prior <- ModelFunction(fun = uniform, param = list(min = 5, max = 50))
+r.Rainf.Xopt.prior <- ModelFunction(fun = uniform, param = list(min = 0, max = 10))
 r.Rainf.Niche <- model(varEnv = EnvDataAveraged, 
-                       fun = Function(fun = conquadraticSkewed1, 
+                       fun = ModelFunction(fun = conquadraticSkewed1, 
                                       param = list(r.Rainf.Xmin.prior, 
                                                    r.Rainf.Xmax.prior,
                                                    r.Rainf.Yopt.prior,

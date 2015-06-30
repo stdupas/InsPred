@@ -13,7 +13,18 @@ setGeneric(
 
 setGeneric(
   name = "myPlot",
-  def = function(object) { return(standardGeneric("myPlot"))})
+  def = function(object,...) { return(standardGeneric("myPlot"))})
+
+setGeneric(
+  name = "myMean",
+  def = function(object1,object2) { return(standardGeneric("myMean"))})
+
+setGeneric(
+  name = "myPlus",
+  def = function(object1,object2) { return(standardGeneric("myPlus"))})
+setGeneric(
+  name = "myMoins",
+  def = function(object1,object2) { return(standardGeneric("myMoins"))})
 
 setGeneric(
   name = "getParameters",

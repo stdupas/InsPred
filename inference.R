@@ -21,11 +21,13 @@ expectedInd.2 <- function(parameters){
   #                disp.D.alpha=,disp.D.beta=)
   #
   
+
   
   # Survival arrays eggs, phyloLarvae, and pupae (do not depend of density, only of parameters)
   
   # times to
-  devRateEggs <- developmentRateLogan(EnvData[,,"Tmean"],"Bf","Egg")
+  devRateEggs <- developmentRateLogan(Tmean,"Bf","Egg")
+  devRateEggs <- lapply(Tmean,devRateBfPhyloLarvaeFunction)
   devTimeEggs <- developmentTime(devRateEggs)
   
   # Egg laying
