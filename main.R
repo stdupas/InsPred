@@ -23,7 +23,7 @@ Tmax <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmax_WFDEI_19980101-20031231.n
 Tmean <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmean_WFDEI_19980101-20031231.nc"),-273.15)
 
 developmentRateLogan(Tmean,"Bf","Egg")
-devRateBfEggFunction <- ModelFunction(name="devRateBfEgg", fun=developmentRateLogan, param=c("Bf","Egg"))
+devRateBfEggFunction <- ModelFunction(name="devRateBfEgg", fun=developmentRateLogan, param=list("Bf","Egg"))
   
 EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/",aggregationParam=1)
 saveRDS(EnvDataRasterStack,"../dataForwardKenya/ObjectEnvdataRasterStackAggr1_1998_2003")
@@ -104,3 +104,4 @@ r.Rainf.Niche <- Function(fun = conquadraticSkewed1, param = list(x,
                                                                   Xopt=r.Rainf.Xopt.prior, 
                                                                   Yopt=r.Rainf.Yopt.prior, 
                                                                   ))
+

@@ -107,7 +107,7 @@ recoverySizeFill <- function(recoveryfile = read.table("../dataForwardKenya/Stem
                              col_names = c(x="Long_dec",y="Lat_dec",birthDate="Diss_Date",size="B._fusca",sampling_effort="no._plants"),
                              startDate,
                              maxDate="2003/12/31"
-                             )
+)
 {
   recovery <- formatAbundanceData(Datarecoveryfile,col_names,maxDate)
   recoverySizeDates <- as.Date(as.Date(startDate):as.Date(maxDate),origin="1970-01-01")
@@ -167,7 +167,7 @@ formatAbundanceData <- function(recovery,
   recovery$demeNb <- cellFromXY(object = rasterStack, xy = recovery[, c("x", "y")])
   recovery <- aggregation(recovery,BY=c("birthDate","demeNb"),methodes=c("Mean","Mean","Name","Sum","Sum","Name"))
   recovery <- recovery[which(as.Date(recovery$birthDate)<=as.Date("2003/12/31")),]
-recovery  
+  recovery  
 }
 
 computeMeanEnvData = function(data, vars, nbDays) {
@@ -241,4 +241,3 @@ radian <- function (degree)
   radian <- degree * (pi/180)
   radian
 }
-

@@ -90,6 +90,22 @@ developmentTime <- function(developmentRate)
   }
   if (class(developmentRate)=="EnvTimeSeries"){
     
+    developmentRate <- as.array(getValues(developmentRate))
+    cumRate <- developmentRate
+    devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
+    for (Day in 1:ncol(developmentRate))
+    {
+      j=1
+      while (any(na.omit(cumRate[,,Day]<1))&(Day-j>0))
+      {
+        NotDevelopped <- (cumRate[n,,Day]<1)
+        cumRate[,Day] <- cumRate[,,Day] + developmentRate[,Day-j]
+        NewlyDevelopped <- (cumRate[NotDevelopped,,Day]>=1)
+        devTime[NewlyDevelopped,,Day] <- j
+        j=j+1
+      }
+    }
+    
   }
 devTime  
 }
