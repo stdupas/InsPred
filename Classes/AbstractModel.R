@@ -1,11 +1,11 @@
 setClass("AbstractModel",
          representation(varName = "character",
                         varEnv = "Lattice",
-                        fun = "Function",
+                        fun = "ModelFunction",
                         "VIRTUAL"),
          prototype(varName = "Undefined",
                    varEnv = new("Lattice"),
-                   fun = new("Function")),
+                   fun = new("ModelFunction")),
          validity = function(object) { ## object : nom reserve !
            if (FALSE)
              return(FALSE)

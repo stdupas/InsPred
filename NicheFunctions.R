@@ -72,19 +72,24 @@ DevTimeArray
 ######## GOOD ONE ###################
 developmentTime <- function(developmentRate)
 {
-  cumRate <- developmentRate
-  devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
-  for (Day in 1:ncol(developmentRate))
-  {
-    j=1
-    while (any(na.omit(cumRate[,Day]<1))&(Day-j>0))
+  if (class(developmentRate)=="array"){
+    cumRate <- developmentRate
+    devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
+    for (Day in 1:ncol(developmentRate))
+    {
+      j=1
+      while (any(na.omit(cumRate[,Day]<1))&(Day-j>0))
       {
-      NotDevelopped <- (cumRate[,Day]<1)
-      cumRate[,Day] <- cumRate[,Day] + developmentRate[,Day-j]
-      NewlyDevelopped <- (cumRate[NotDevelopped,Day]>=1)
-      devTime[NewlyDevelopped,Day] <- j
-      j=j+1
+        NotDevelopped <- (cumRate[,Day]<1)
+        cumRate[,Day] <- cumRate[,Day] + developmentRate[,Day-j]
+        NewlyDevelopped <- (cumRate[NotDevelopped,Day]>=1)
+        devTime[NewlyDevelopped,Day] <- j
+        j=j+1
       }
+    }
+  }
+  if (class(developmentRate)=="EnvTimeSeries"){
+    
   }
 devTime  
 }

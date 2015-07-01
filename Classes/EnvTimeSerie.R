@@ -35,6 +35,12 @@ setMethod(f="getValues",
             return(object@values)
           })
 
+setMethod(f="getDates",
+          signature = "EnvTimeSerie",
+          definition = function(object){
+            return(object@dates)
+          })
+
 
 setMethod("myMean",
           signature = "EnvTimeSerie",
@@ -76,14 +82,6 @@ setMethod("myMoins",
             Object
           })
 
-
-setMethod("my+",
-          signature = "EnvTimeSerie",
-          function(object1,object2){
-            Object <- object1
-            values(Object@values) <- values(object2@values)+values(object1@values)
-            Object
-          })
 
 EnvTimeSerie <- function(x,aggregationParam=1) 
 {

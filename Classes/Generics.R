@@ -12,6 +12,10 @@ setGeneric(
   def = function(object) { return(standardGeneric("getValues"))})
 
 setGeneric(
+  name = "getDates",
+  def = function(object) { return(standardGeneric("getDates"))})
+
+setGeneric(
   name = "myPlot",
   def = function(object,...) { return(standardGeneric("myPlot"))})
 
