@@ -21,8 +21,10 @@ Rainf <- EnvTimeSerie("../dataForwardKenya/Rainf_WFDEI_19980101-20031231.nc")
 Tmin <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmin_WFDEI_19980101-20031231.nc"),-273.15)
 Tmax <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmax_WFDEI_19980101-20031231.nc"),-273.15)
 Tmean <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmean_WFDEI_19980101-20031231.nc"),-273.15)
+devRateLogan <- developmentRateLogan(getValues(Tmean),"Bf","Egg")
+devRateLoganETS <- EnvTimeSerie(list(stack(devRateLogan),getDates(Tmean)))
+devRateLoganARRAY <- as.array(devRateLogan)
 
-developmentRateLogan(Tmean,"Bf","Egg")
 devRateBfEggFunction <- ModelFunction(name="devRateBfEgg", fun=developmentRateLogan, param=list("Bf","Egg"))
   
 EnvDataRasterStack = nc2EnvDataAndRasterStack(ncDirectory="../dataForwardKenya/",aggregationParam=1)
