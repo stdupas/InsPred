@@ -1,6 +1,6 @@
 setClass("EnvTimeSerie",
-         representation(values = "RasterStack",dates = "Date"),
-         prototype(values = plot(rts(stack(raster(matrix(1))),as.Date(0)))),
+         representation(values = "RasterBrick",dates = "Date"),
+         prototype(values = plot(rts(brick(raster(matrix(1))),as.Date(0)))),
          contains = "Environnement",
          validity = function(object){
            if (nlayers(object@values)!=length(object@dates)){
@@ -41,27 +41,26 @@ setMethod(f="getDates",
             return(object@dates)
           })
 
-
 setMethod("myMean",
           signature = "EnvTimeSerie",
           function(object1,object2){
           Object <- object1
-          Object@values <- stack((object1@values+object2@values)/2)
+          Object@values <- (object1@values+object2@values)/2
           Object
           })
 
 setMethod("myPlus",
           signature = "EnvTimeSerie",
           function(object1,object2){
-            if ((class(object1)=="numeric")&(class(object2)=="EnvTimeSerie")) {
+            if (((class(object2)=="integer")|(class(object1)=="numeric"))&(class(object2)=="EnvTimeSerie")) {
               Object <- object2
-              Object@values <- stack(object1+object2@values)
-            } else if ((class(object2)=="numeric")&(class(object1)=="EnvTimeSerie")) {
+              Object@values <- object1+object2@values
+            } else if (((class(object2)=="integer")|(class(object2)=="numeric"))&(class(object1)=="EnvTimeSerie")) {
               Object <- object1
-              Object@values <- stack(object2+object1@values)
-            } else if ((class(object1)=="EnvTimeSerie")&(class(object2)=="EnvTimeSerie")){
+              Object@values <- object2+object1@values
+            } else if (((class(object2)=="integer")|(class(object1)=="EnvTimeSerie"))&(class(object2)=="EnvTimeSerie")){
               Object <- object1
-              Object@values <- stack(object2@values+object1@values)
+              Object@values <- object2@values+object1@values
             } else {stop ("invalid arguments")}
             Object
           })
@@ -69,15 +68,15 @@ setMethod("myPlus",
 setMethod("myMoins",
           signature = "EnvTimeSerie",
           function(object1,object2){
-            if ((class(object1)=="numeric")&(class(object2)=="EnvTimeSerie")) {
+            if(((class(object2)=="integer")|(class(object1)=="numeric"))&(class(object2)=="EnvTimeSerie"))  {
               Object <- object2
-              Object@values <- stack(object1-object2@values)
-            } else if ((class(object2)=="numeric")&(class(object1)=="EnvTimeSerie")) {
+              Object@values <- object2@values-object1
+            } else if (((class(object2)=="integer")|(class(object2)=="numeric"))&(class(object1)=="EnvTimeSerie")){
               Object <- object1
-              Object@values <- stack(object2-object1@values)
-            } else if ((class(object1)=="EnvTimeSerie")&(class(object2)=="EnvTimeSerie")){
+              Object@values <- object1@values-object2
+            } else if (((class(object2)=="integer")|(class(object1)=="EnvTimeSerie"))&(class(object2)=="EnvTimeSerie")){
               Object <- object1
-              Object@values <- stack(object2@values-object1@values)
+              Object@values <- object2@values-object1@values
             } else {stop ("invalid arguments")}
             Object
           })
@@ -111,7 +110,7 @@ EnvTimeSerie <- function(x,aggregationParam=1)
     } else {
       rasterAgg <- rasterLayer
     }
-    stackRasterAgg <- stack(rasterAgg)
+    brickRasterAgg <- brick(rasterAgg)
     nCell <- ncell(rasterAgg) #length(latitude)*length(longitude)/(aggregationParam^2)
     EnvData <- array(NA,
                      dim=c(nCell,length(Dates),length(x)),
@@ -119,7 +118,6 @@ EnvTimeSerie <- function(x,aggregationParam=1)
     EnvData <- array(NA,
                      dim=c(nrow(rasterLayer),ncol(rasterLayer),length(Dates)),
                      dimnames=list(1:nrow(rasterLayer),1:ncol(rasterLayer),as.character(Dates)))
-    #    rasterStackAgg <- stack(rasterAgg)
     enVarNC <- var.get.nc(nc,variable)
     cropBeforeAggregate <- any((dim(rasterLayer)%%aggregationParam)[1:2]!=c(0,0))
     print(length(Dates))
@@ -134,20 +132,24 @@ EnvTimeSerie <- function(x,aggregationParam=1)
         rasterAgg <- aggregate(rasterLayer2,aggregationParam)} else {rasterAgg <- rasterLayer}
       EnvData[,,i] <- matrix(values(rasterAgg),nrow=nrow(rasterAgg),ncol=ncol(rasterAgg),byrow=TRUE)
     }
-    stackRasterAgg <- stack(brick(EnvData,xmn=xmin(rasterAgg),xmx=xmax(rasterAgg),ymn=ymin(rasterAgg),ymx=ymax(rasterAgg)))
-    x <- list(stackRasterAgg,Dates)
+    brickRasterAgg <- brick(EnvData,xmn=xmin(rasterAgg),xmx=xmax(rasterAgg),ymn=ymin(rasterAgg),ymx=ymax(rasterAgg))
+    x <- list(brickRasterAgg,Dates)
   } else { if (!(class(x)%in%c("list","character"))) stop("wrong arguments")
   if ((class(x)=="list")&(length(x)!=2)) stop("list does not have 2 arguments") else {
-    if (!(class(x[[1]])%in% c("matrix","list","RasterStack"))) stop("first argument in the list is not a matrix, a list or a RasterStackTS")
+    if (!(class(x[[1]])%in% c("matrix","list","Rasterbrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
     if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
     if (!((class(x[[1]])=="matrix")&(length(x[[2]])==1)|(nlayers(x[[1]])==length(x[[2]])))) stop("length of the first and second arguments of the list do not correspond")
   }
   if (class(x)=="list"){
-    if (class(x[[1]])=="matrix") x[[1]] <- stack(raster(x[[1]]))
+    if (class(x[[1]])=="matrix") x[[1]] <- brick(raster(x[[1]]))
     if (class(x[[1]])=="list"){
       if (all(lapply(x[[1]],FUN=class)=="matrix")) {
-        x[[1]] <- stack(lapply(x[[1]],FUN=raster))
+        x[[1]] <- brick(lapply(x[[1]],FUN=raster))
       }
+      if (((class(x[[1]][[1]])=="array")|(class(x[[1]][[1]])=="matrix"))&(length(dim(x[[1]][[1]]))==2)&(class(x[[1]][[2]])=="numeric")&(length(x[[1]][[2]])==1)) {
+        x[[1]] <- setValues(brick(array(NA,dim=c(nrow(x[[1]][[1]])/x[[1]][[2]],x[[1]][[2]],ncol(x[[1]][[1]])))),c(x[[1]][[1]]))
+      }
+
     }
     x <- list(x[[1]],x[[2]])
   }
@@ -155,4 +157,4 @@ EnvTimeSerie <- function(x,aggregationParam=1)
 new("EnvTimeSerie",values=x[[1]],dates=x[[2]])
 }
     
-
+array2D_to_array3D <- function(array,)
