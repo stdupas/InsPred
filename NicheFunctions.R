@@ -72,27 +72,26 @@ DevTimeArray
 ######## GOOD ONE ###################
 developmentTime <- function(developmentRate)
 {
- # if ((class(developmentRate)=="array")&(length(dim(developmentRate)==2))){
-  #  developmentRate <- array(developmentRate,dim=c(),dimnames=list(,,,))
-   # nrow=length(latitude),ncol=length(longitude),byrow=TRUE))
-    #cumRate <- developmentRate
-    #devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
-    #for (Day in 1:ncol(developmentRate))
-    #{
-     # j=1
-      #while (any(na.omit(cumRate[,Day]<1))&(Day-j>0))
-      #{
-        #NotDevelopped <- (cumRate[,Day]<1)
-        #cumRate[,Day] <- cumRate[,Day] + developmentRate[,Day-j]
-        #NewlyDevelopped <- (cumRate[NotDevelopped,Day]>=1)
-        #devTime[NewlyDevelopped,Day] <- j
-        #j=j+1
-      #}
-    #}
-  #} else {
+ if ((class(developmentRate)=="array"|class(developmentRate)== "matrix")&(length(dim(developmentRate)==2))){
+    cumRate <- developmentRate
+    devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
+    for (Day in 1:ncol(developmentRate))
+    {
+      j=1
+      while (any(na.omit(cumRate[,Day]<1))&(Day-j>0))
+      {
+        NotDevelopped <- (cumRate[,Day]<1)
+        cumRate[,Day] <- cumRate[,Day] + developmentRate[,Day-j]
+        NewlyDevelopped <- (cumRate[NotDevelopped,Day]>=1)
+        devTime[NewlyDevelopped,Day] <- j
+        j=j+1
+      }
+    }
+  } else {
     if (class(developmentRate)=="EnvTimeSeries") developmentRate <- getValues(developmentRate)
     if (class(developmentRate)=="RasterBrick") developmentRate <-as.array(developmentRate)
     if (class(developmentRate)=="RasterStack") developmentRate <-as.array(developmentRate)
+      developmentRate <- EnvTimeSerie(developmentRate)
       cumRate <- developmentRate
       devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
       for (Day in 1:ncol(developmentRate))
@@ -107,8 +106,9 @@ developmentTime <- function(developmentRate)
           j=j+1
         }
       }
-    #}
-  #}
-devTime  
-}
+    }
+ devTime 
+  }
+
+
 

@@ -6,9 +6,9 @@ setClass("EnvTimeSerie",
            if (nlayers(object@values)!=length(object@dates)){
              stop("length values differ from length of dates")
            } else {}
-         return(TRUE)
+           return(TRUE)
          }
-         )
+)
 
 setMethod("show", 
           signature="EnvTimeSerie",
@@ -19,7 +19,7 @@ setMethod("show",
 setMethod("myPlot", 
           signature="EnvTimeSerie",
           function(object,Layers){
-          plot(object@values,Layers)
+            plot(object@values,Layers)
           })
 
 setMethod("ToStream", 
@@ -44,9 +44,9 @@ setMethod(f="getDates",
 setMethod("myMean",
           signature = "EnvTimeSerie",
           function(object1,object2){
-          Object <- object1
-          Object@values <- (object1@values+object2@values)/2
-          Object
+            Object <- object1
+            Object@values <- (object1@values+object2@values)/2
+            Object
           })
 
 setMethod("myPlus",
@@ -135,26 +135,27 @@ EnvTimeSerie <- function(x,aggregationParam=1)
     brickRasterAgg <- brick(EnvData,xmn=xmin(rasterAgg),xmx=xmax(rasterAgg),ymn=ymin(rasterAgg),ymx=ymax(rasterAgg))
     x <- list(brickRasterAgg,Dates)
   } else { if (!(class(x)%in%c("list","character"))) stop("wrong arguments")
-  if ((class(x)=="list")&(length(x)!=2)) stop("list does not have 2 arguments") else {
-    if (!(class(x[[1]])%in% c("matrix","list","Rasterbrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
-    if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
-    if (!((class(x[[1]])=="matrix")&(length(x[[2]])==1)|(nlayers(x[[1]])==length(x[[2]])))) stop("length of the first and second arguments of the list do not correspond")
+           if ((class(x)=="list")&(length(x)!=2)) stop("list does not have 2 arguments") else {
+             if (!(class(x[[1]])%in% c("matrix","list","Rasterbrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
+             if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
+             if (!((class(x[[1]])=="matrix")&(length(x[[2]])==1)|(nlayers(x[[1]])==length(x[[2]])))) stop("length of the first and second arguments of the list do not correspond")
+           }
+           if (class(x)=="list"){
+             if (class(x[[1]])=="matrix") x[[1]] <- brick(raster(x[[1]]))
+             if (class(x[[1]])=="list"){
+               if (all(lapply(x[[1]],FUN=class)=="matrix")) {
+                 x[[1]] <- brick(lapply(x[[1]],FUN=raster))
+               }
+               if (((class(x[[1]][[1]])=="array")|(class(x[[1]][[1]])=="matrix"))&(length(dim(x[[1]][[1]]))==2)&(class(x[[1]][[2]])=="numeric")&(length(x[[1]][[2]])==1)) {
+                 x[[1]] <- setValues(brick(array(NA,dim=c(nrow(x[[1]][[1]])/x[[1]][[2]],x[[1]][[2]],ncol(x[[1]][[1]])))),c(x[[1]][[1]]))
+               }
+               
+             }
+             x <- list(x[[1]],x[[2]])
+           }
   }
-  if (class(x)=="list"){
-    if (class(x[[1]])=="matrix") x[[1]] <- brick(raster(x[[1]]))
-    if (class(x[[1]])=="list"){
-      if (all(lapply(x[[1]],FUN=class)=="matrix")) {
-        x[[1]] <- brick(lapply(x[[1]],FUN=raster))
-      }
-      if (((class(x[[1]][[1]])=="array")|(class(x[[1]][[1]])=="matrix"))&(length(dim(x[[1]][[1]]))==2)&(class(x[[1]][[2]])=="numeric")&(length(x[[1]][[2]])==1)) {
-        x[[1]] <- setValues(brick(array(NA,dim=c(nrow(x[[1]][[1]])/x[[1]][[2]],x[[1]][[2]],ncol(x[[1]][[1]])))),c(x[[1]][[1]]))
-      }
-
-    }
-    x <- list(x[[1]],x[[2]])
-  }
-  }
-new("EnvTimeSerie",values=x[[1]],dates=x[[2]])
+  new("EnvTimeSerie",values=x[[1]],dates=x[[2]])
 }
-    
-array2D_to_array3D <- function(array,)
+
+#array2D_to_array3D <- function(array,)
+  
