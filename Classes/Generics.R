@@ -12,6 +12,18 @@ setGeneric(
   def = function(object) { return(standardGeneric("getValues"))})
 
 setGeneric(
+  name = "etsDim",
+  def = function(object) { return(standardGeneric("etsDim"))})
+
+setGeneric(
+  name = "getEnvTimeSeries",
+  def = function(object) { return(standardGeneric("getEnvTimeSeries"))})
+
+setGeneric(
+  name = "getEcolArray",
+  def = function(object) { return(standardGeneric("getEcolArray"))})
+
+setGeneric(
   name = "getDates",
   def = function(object) { return(standardGeneric("getDates"))})
 

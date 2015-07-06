@@ -88,21 +88,20 @@ developmentTime <- function(developmentRate)
       }
     }
   } else {
-    if (class(developmentRate)=="EnvTimeSeries") developmentRate <- getValues(developmentRate)
-    if (class(developmentRate)=="RasterBrick") developmentRate <-as.array(developmentRate)
-    if (class(developmentRate)=="RasterStack") developmentRate <-as.array(developmentRate)
-      developmentRate <- EnvTimeSerie(developmentRate)
+    if (class(developmentRate)=="EnvTimeSeries") developmentRate <- values(getValues(developmentRate))
+    if (class(developmentRate)=="RasterBrick") developmentRate <-values(developmentRate)
+    if (class(developmentRate)=="RasterStack") developmentRate <-values(developmentRate)
       cumRate <- developmentRate
       devTime <- array(NA,dim=dim(developmentRate),dimnames=dimnames(developmentRate))
       for (Day in 1:ncol(developmentRate))
       {
         j=1
-        while (any(na.omit(cumRate[,,Day]<1))&(Day-j>0))
+        while (any(na.omit(cumRate[,Day]<1))&(Day-j>0))
         {
-          NotDevelopped <- which(cumRate[,,Day]<1)
-          cumRate[,,Day] <- cumRate[,,Day] + developmentRate[,,Day-j]
-          NewlyDevelopped <- (cumRate[NotDevelopped,,Day]>=1)
-          devTime[NewlyDevelopped,,Day] <- j
+          NotDevelopped <- which(cumRate[,Day]<1)
+          cumRate[,Day] <- cumRate[,Day] + developmentRate[,Day-j]
+          NewlyDevelopped <- (cumRate[NotDevelopped,Day]>=1)
+          devTime[NewlyDevelopped,Day] <- j
           j=j+1
         }
       }
@@ -110,5 +109,16 @@ developmentTime <- function(developmentRate)
  devTime 
   }
 
-
+numericalResponse(pyramide_d_age,EnvData)
+{
+  # arguments :
+  # EcolData
+  # devRates = matrix of development rate per unit of time [deme, stage]
+  # egg_layed = matrix of number of eggs layed per adult 
+  # egg_survival = matrix or scalar of egg survival probability per day
+  # value : transition matrix 
+  #
+  
+  
+}
 

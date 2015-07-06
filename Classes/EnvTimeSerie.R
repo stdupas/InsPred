@@ -49,6 +49,12 @@ setMethod("myMean",
             Object
           })
 
+setMethod("etsDim",
+          signature = "EnvTimeSerie",
+          function(object){
+            return(dim(object@values))
+          })
+
 setMethod("myPlus",
           signature = "EnvTimeSerie",
           function(object1,object2){
@@ -81,9 +87,20 @@ setMethod("myMoins",
             Object
           })
 
-
 EnvTimeSerie <- function(x,aggregationParam=1) 
 {
+  # Arguments: either
+  # 1) a list of
+  # - In first position : environmental data; either
+  #     - a list of matrix (X=longitude,Y=latitude) by date
+  #     - an array (X,Y,Z) = (longitude, latitude, date)
+  #     - an list[array (deme,Date), number_of_column]
+  #     - a matrix (X,Y)
+  #     - a raster brick (X,Y) layers by date
+  # - In second position : a vector of dates
+  # 2) A netCDF file name
+  # Values: an EnvTimeSerie (environmental time serie) class variable
+  
   if (class(x)[[1]]=="character"){
     variable <- tail(strsplit(strsplit(x[[1]],"_")[[1]][1],"/")[[1]],n=1)
     Dates <- strsplit(strsplit(tail(strsplit(x[[1]],"_")[[1]],n=1),"[.]")[[1]][1],"-")[[1]]
@@ -138,7 +155,8 @@ EnvTimeSerie <- function(x,aggregationParam=1)
            if ((class(x)=="list")&(length(x)!=2)) stop("list does not have 2 arguments") else {
              if (!(class(x[[1]])%in% c("matrix","list","RasterBrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
              if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
-             if (!((class(x[[1]])=="matrix")&(length(x[[2]])==1)|(nlayers(x[[1]])==length(x[[2]])))) stop("length of the first and second arguments of the list do not correspond")
+             if ((class(x[[1]])=="matrix") & (length(x[[2]])!=1)) stop("first argument is a matrix (X,Y) but length of date is not 1")
+             if (class(x[[1]])=="RasterBrick") if (nlayers(x[[1]])!=length(x[[2]])) stop("nlayers of raster brick and number of dates do not match")
            }
            if (class(x)=="list"){
              if (class(x[[1]])=="matrix") x[[1]] <- brick(raster(x[[1]]))

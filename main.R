@@ -16,14 +16,31 @@ source("Classes/Generics.R")
 source("Classes/ModelFunction.R")
 source("Classes/Environment.R")
 source("Classes/EnvTimeSerie.R")
+source("Classes/EnvTimeSeries.R")
 
 Rainf <- EnvTimeSerie("../dataForwardKenya/Rainf_WFDEI_19980101-20031231.nc")
 Tmin <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmin_WFDEI_19980101-20031231.nc"),-273.15)
 Tmax <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmax_WFDEI_19980101-20031231.nc"),-273.15)
 Tmean <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmean_WFDEI_19980101-20031231.nc"),-273.15)
+#bidon <- EnvTimeSerie(list(crop(getValues(Tmean),extent(getValues(Tmean))-2),getDates(Tmean)))
+#EnvData <- EnvTimeSeries(list(Rainf,bidon))
+EnvData <- EnvTimeSeries(list(Rainf,Tmin,Tmax,Tmean))
+EcolData <- EcolData(list(array(0,dim=c(dim(getValues(Rainf))[1:2],5*10)),as.Date("2001-01-01"),EnvData))
+
+
+
+
+function(x) 
+{
+  # Arguments: a list
+  # - [[1]] an array class variables [Age_class,X,Y,Stage]
+  # - [[2]] a one day Date class variable 
+  # - [[3]] an EnvTimeSerie class (X,Y dimension should correspond with the array)
+  new("EcolData",ecolarray=x[[1]],dates=x[[2]],envtimeserie=x[[3]])
+}  
 devRateLogan <- developmentRateLogan(getValues(Tmean),"Bf","Egg")
-devRateLoganETS <- EnvTimeSerie(list(stack(devRateLogan),getDates(Tmean)))
-devRateLoganARRAY <- as.array(devRateLogan)
+
+
 
 devRateBfEggFunction <- ModelFunction(name="devRateBfEgg", fun=developmentRateLogan, param=list("Bf","Egg"))
   
