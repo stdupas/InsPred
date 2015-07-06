@@ -136,7 +136,7 @@ EnvTimeSerie <- function(x,aggregationParam=1)
     x <- list(brickRasterAgg,Dates)
   } else { if (!(class(x)%in%c("list","character"))) stop("wrong arguments")
            if ((class(x)=="list")&(length(x)!=2)) stop("list does not have 2 arguments") else {
-             if (!(class(x[[1]])%in% c("matrix","list","Rasterbrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
+             if (!(class(x[[1]])%in% c("matrix","list","RasterBrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
              if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
              if (!((class(x[[1]])=="matrix")&(length(x[[2]])==1)|(nlayers(x[[1]])==length(x[[2]])))) stop("length of the first and second arguments of the list do not correspond")
            }
