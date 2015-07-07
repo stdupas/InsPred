@@ -109,7 +109,23 @@ developmentTime <- function(developmentRate)
  devTime 
   }
 
-numericalResponse(pyramide_d_age,EnvData)
+plantQuality <- function(env_time_series,variable,number_of_days)
+{
+  # Adds a plant quality layer onto Environemental Time serie
+  #
+  #
+  env_time_serie <- getEnvTimeSerie(env_time_series,variable)
+  env_time_array <- getArray(env_time_serie)
+  env_time_array_nb_day_added <- env_time_array[,,c(rep(1,number_of_days-1),1:dim(env_time_array)[3])]
+  plant_quality_array <- getArray(env_time_serie)
+  for (day in 1:dim(env_time_array)[3]){
+    plant_quality_array[,,day] <- rowMeans(env_time_array_nb_day_added[,,day:(day+number_of_days-1)],dims=2)
+  }
+  EnvTimeSerie(list(plant_quality_array,getDates(env_time_serie),"plantQ",extent(getValues(env_time_serie))))
+}
+
+
+numericalResponse(pyramide_d_age,brickDay)
 {
   # arguments :
   # EcolData

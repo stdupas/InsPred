@@ -17,16 +17,27 @@ source("Classes/ModelFunction.R")
 source("Classes/Environment.R")
 source("Classes/EnvTimeSerie.R")
 source("Classes/EnvTimeSeries.R")
+source("Classes/EcoDay.R")
 
+bunrin_period=100
 Rainf <- EnvTimeSerie("../dataForwardKenya/Rainf_WFDEI_19980101-20031231.nc")
 Tmin <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmin_WFDEI_19980101-20031231.nc"),-273.15)
 Tmax <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmax_WFDEI_19980101-20031231.nc"),-273.15)
 Tmean <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmean_WFDEI_19980101-20031231.nc"),-273.15)
-#bidon <- EnvTimeSerie(list(crop(getValues(Tmean),extent(getValues(Tmean))-2),getDates(Tmean)))
-#EnvData <- EnvTimeSeries(list(Rainf,bidon))
 EnvData <- EnvTimeSeries(list(Rainf,Tmin,Tmax,Tmean))
-EcolData <- EcolData(list(array(0,dim=c(dim(getValues(Rainf))[1:2],5*10)),as.Date("2001-01-01"),EnvData))
+PlantQ <- plantQuality(EnvData,"Rainf",15)
+EnvData <- EnvTimeSeries(list(Rainf,Tmin,Tmax,Tmean,PlantQ))
+plot(getDay(EnvData,1))
+#bidon <- EnvTimeSerie(list(crop(getValues(Tmean),extent(getValues(Tmean))-2),getDates(Tmean),"Rainf"))
+#EnvData <- EnvTimeSeries(list(Rainf,bidon))
+ED <- EcoDay(list(array(0,dim=c(dim(getValues(Rainf))[1:2],5*10)),as.Date("2001-01-01"),getDay(EnvData,1),stages=c("Egg","PhyloL","StembL","Pupae","Adult"),ageClasses=c(1:10,1:10,1:10,1:10,1:10)))
+ED1 <- mySetValues(ED,1)
+EDegg <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),1:10)
+EDphL <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),11:20)
+EDegg <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),1:10)
+EDegg <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),1:10)
 
+getDay(EnvData,1)
 
 
 

@@ -20,9 +20,19 @@ expectedInd.2 <- function(parameters){
   #                K.Tmax.Xmin=,K.Tmax.Xmax=,K.Tmax.Xopt=,K.Tmax.Yopt=,
   #                disp.D.alpha=,disp.D.beta=)
   #
+  refStack <- getDay(EnvData,1)
   
-  
-  
+  Current <- mySetValues(EcoDay(list(array(0,dim=c(dim(refStack)[1:2],5*10)),
+                                     as.Date("2001-01-01"),getDay(EnvData,1),
+                                     stages=c("Egg","PhyloL","StembL","Pupae","Adult"),
+                                     ageClasses=c(1:10,1:10,1:10,1:10,1:10))),
+                         array(1,c(dim(ED@values)[1:2],10)),41:50)
+  Next <- Current
+  Day=1
+  while (Day < etsDim(EnvData)[[1]][3])
+  {
+    if (Day<burnin_period) 
+  }
   # Survival arrays eggs, phyloLarvae, and pupae (do not depend of density, only of parameters)
   
   # times to

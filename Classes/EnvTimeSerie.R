@@ -1,5 +1,5 @@
 setClass("EnvTimeSerie",
-         representation(values = "RasterBrick",dates = "Date"),
+         representation(values = "RasterBrick",dates = "Date",varName= "character"),
          prototype(values = plot(rts(brick(raster(matrix(1))),as.Date(0)))),
          contains = "Environnement",
          validity = function(object){
@@ -35,10 +35,24 @@ setMethod(f="getValues",
             return(object@values)
           })
 
+setMethod(f="getArray",
+          signature = "EnvTimeSerie",
+          definition = function(object){
+            return(as.array(object@values))
+          })
+
 setMethod(f="getDates",
           signature = "EnvTimeSerie",
           definition = function(object){
             return(object@dates)
+          })
+
+setMethod(f="getDay",
+          signature = "EnvTimeSerie",
+          definition = function(object1,object2){
+            tmp <-brick(lapply(lapply(getValues(object1),getValues),function(x) subset(x,object2)))
+            names(tmp) <- paste(getVarNames(object1),object2,sep="_")
+            return(tmp)
           })
 
 setMethod("myMean",
@@ -49,10 +63,22 @@ setMethod("myMean",
             Object
           })
 
+setMethod("meanByDate",
+          signature = "EnvTimeSerie",
+          function(object1,object2){
+            
+          })
+
 setMethod("etsDim",
           signature = "EnvTimeSerie",
           function(object){
             return(dim(object@values))
+          })
+
+setMethod("getVarNames",
+          signature = "EnvTimeSerie",
+          function(object){
+            return(object@varName)
           })
 
 setMethod("myPlus",
@@ -98,6 +124,8 @@ EnvTimeSerie <- function(x,aggregationParam=1)
   #     - a matrix (X,Y)
   #     - a raster brick (X,Y) layers by date
   # - In second position : a vector of dates
+  # - In third position : a variable name
+  # - In fourth position : extent(c(xmin,xmax,ymin,ymax))
   # 2) A netCDF file name
   # Values: an EnvTimeSerie (environmental time serie) class variable
   
@@ -150,16 +178,15 @@ EnvTimeSerie <- function(x,aggregationParam=1)
       EnvData[,,i] <- matrix(values(rasterAgg),nrow=nrow(rasterAgg),ncol=ncol(rasterAgg),byrow=TRUE)
     }
     brickRasterAgg <- brick(EnvData,xmn=xmin(rasterAgg),xmx=xmax(rasterAgg),ymn=ymin(rasterAgg),ymx=ymax(rasterAgg))
-    x <- list(brickRasterAgg,Dates)
+    x <- list(brickRasterAgg,Dates,variable)
   } else { if (!(class(x)%in%c("list","character"))) stop("wrong arguments")
-           if ((class(x)=="list")&(length(x)!=2)) stop("list does not have 2 arguments") else {
-             if (!(class(x[[1]])%in% c("matrix","list","RasterBrick"))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
-             if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
-             if ((class(x[[1]])=="matrix") & (length(x[[2]])!=1)) stop("first argument is a matrix (X,Y) but length of date is not 1")
-             if (class(x[[1]])=="RasterBrick") if (nlayers(x[[1]])!=length(x[[2]])) stop("nlayers of raster brick and number of dates do not match")
-           }
+           if (!(((class(x[[1]])%in% c("matrix","list","RasterBrick")))|(class(x[[1]])=="array"&length(dim(x[[1]]))==3))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
+           if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
+           if ((class(x[[1]])=="matrix") & (length(x[[2]])!=1)) stop("first argument is a matrix (X,Y) but length of date is not 1")
+           if (class(x[[1]])=="RasterBrick") if (nlayers(x[[1]])!=length(x[[2]])) stop("nlayers of raster brick and number of dates do not match")
            if (class(x)=="list"){
              if (class(x[[1]])=="matrix") x[[1]] <- brick(raster(x[[1]]))
+             if (class(x[[1]])=="array") {x[[1]] <- brick(x[[1]]);names(x[[1]]) <- x[[2]];extent(x[[1]]) <- extent(x[[4]])}
              if (class(x[[1]])=="list"){
                if (all(lapply(x[[1]],FUN=class)=="matrix")) {
                  x[[1]] <- brick(lapply(x[[1]],FUN=raster))
@@ -169,10 +196,10 @@ EnvTimeSerie <- function(x,aggregationParam=1)
                }
                
              }
-             x <- list(x[[1]],x[[2]])
+#             x <- list(x[[1]],x[[2]],x[[3]])
            }
   }
-  new("EnvTimeSerie",values=x[[1]],dates=x[[2]])
+  new("EnvTimeSerie",values=x[[1]],dates=x[[2]],varName=x[[3]])
 }
 
 #array2D_to_array3D <- function(array,)

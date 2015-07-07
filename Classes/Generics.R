@@ -12,20 +12,32 @@ setGeneric(
   def = function(object) { return(standardGeneric("getValues"))})
 
 setGeneric(
+  name = "mySetValues",
+  def = function(object,newValues,Subset) { return(standardGeneric("mySetValues"))})
+
+setGeneric(
   name = "etsDim",
   def = function(object) { return(standardGeneric("etsDim"))})
 
 setGeneric(
-  name = "getEnvTimeSeries",
-  def = function(object) { return(standardGeneric("getEnvTimeSeries"))})
+  name = "getDay",
+  def = function(object1,object2) { return(standardGeneric("getDay"))})
 
 setGeneric(
-  name = "getEcolArray",
-  def = function(object) { return(standardGeneric("getEcolArray"))})
+  name = "getEnvTimeSerie",
+  def = function(object1,object2) { return(standardGeneric("getEnvTimeSerie"))})
+
+setGeneric(
+  name = "getArray",
+  def = function(object) { return(standardGeneric("getArray"))})
 
 setGeneric(
   name = "getDates",
   def = function(object) { return(standardGeneric("getDates"))})
+
+setGeneric(
+  name = "getVarNames",
+  def = function(object) { return(standardGeneric("getVarNames"))})
 
 setGeneric(
   name = "myPlot",
