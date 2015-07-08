@@ -63,11 +63,11 @@ setMethod("myMean",
             Object
           })
 
-setMethod("meanByDate",
-          signature = "EnvTimeSerie",
-          function(object1,object2){
-            
-          })
+#setMethod("meanByDate",
+#          signature = "EnvTimeSerie",
+#          function(object1,object2){
+#            
+#          })
 
 setMethod("etsDim",
           signature = "EnvTimeSerie",
@@ -120,7 +120,7 @@ EnvTimeSerie <- function(x,aggregationParam=1)
   # - In first position : environmental data; either
   #     - a list of matrix (X=longitude,Y=latitude) by date
   #     - an array (X,Y,Z) = (longitude, latitude, date)
-  #     - an list[array (deme,Date), number_of_column]
+  #     - a list[array (deme,Date), number_of_column]
   #     - a matrix (X,Y)
   #     - a raster brick (X,Y) layers by date
   # - In second position : a vector of dates
@@ -180,7 +180,7 @@ EnvTimeSerie <- function(x,aggregationParam=1)
     brickRasterAgg <- brick(EnvData,xmn=xmin(rasterAgg),xmx=xmax(rasterAgg),ymn=ymin(rasterAgg),ymx=ymax(rasterAgg))
     x <- list(brickRasterAgg,Dates,variable)
   } else { if (!(class(x)%in%c("list","character"))) stop("wrong arguments")
-           if (!(((class(x[[1]])%in% c("matrix","list","RasterBrick")))|(class(x[[1]])=="array"&length(dim(x[[1]]))==3))) stop("first argument in the list is not a matrix, and a list or a Rasterbrick")
+           if (!(((class(x[[1]])%in% c("matrix","list","RasterBrick")))|(class(x[[1]])=="array"&length(dim(x[[1]]))==3))) stop("first argument in the list is not a matrix, list, nor Rasterbrick")
            if (class(x[[2]])!="Date") stop("second argument in the list is not a date")
            if ((class(x[[1]])=="matrix") & (length(x[[2]])!=1)) stop("first argument is a matrix (X,Y) but length of date is not 1")
            if (class(x[[1]])=="RasterBrick") if (nlayers(x[[1]])!=length(x[[2]])) stop("nlayers of raster brick and number of dates do not match")

@@ -33,7 +33,7 @@ expectedInd.2 <- function(parameters){
   {
     if (Day<burnin_period) 
   }
-  # Survival arrays eggs, phyloLarvae, and pupae (do not depend of density, only of parameters)
+  # Survival arrays eggs, phyloLarvae, and pupae (do not depend on density, only on parameters)
   
   # times to
   devRateEggs <- EnvTimeSerie(list(stack(developmentRateLogan(getValues(Tmean),"Bf","Egg")),getDates(Tmean)))

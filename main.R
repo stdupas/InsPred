@@ -19,7 +19,7 @@ source("Classes/EnvTimeSerie.R")
 source("Classes/EnvTimeSeries.R")
 source("Classes/EcoDay.R")
 
-bunrin_period=100
+burnin_period=100
 Rainf <- EnvTimeSerie("../dataForwardKenya/Rainf_WFDEI_19980101-20031231.nc")
 Tmin <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmin_WFDEI_19980101-20031231.nc"),-273.15)
 Tmax <-  myPlus(EnvTimeSerie("../dataForwardKenya/Tmax_WFDEI_19980101-20031231.nc"),-273.15)
