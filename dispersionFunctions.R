@@ -8,7 +8,23 @@ fatTail1 <- function(x, alpha, beta){
   #
   # Returns:
   #   The value of dispersion kernel for x
-  return(1/(1+1/alpha *x^beta))
+  #
+  # pertinent priors, alpha : order of magnitude of map resolution (to get high probablity to stay in the same deme), 
+  # beta from 0.5 to 3 when beta increases leptokurtosis disminishes
+  #
+  return(1/(1+0.2*(x*10/alpha)^(beta*1.6)))
+}
+
+fatTail1prob_0_1000 <- function(x,alpha,beta)
+{
+  (fatTail1(x,alpha,beta))/sum((fatTail1(0:1000,alpha,beta)))
+}
+
+fat_tail_mean <- function(alpha,beta) 
+{
+a=NA
+for (i in 1:length(alpha)) {a[i] <-  sum(0:1000*fatTail1prob_0_1000(0:1000,alpha[i],beta))}
+a
 }
 
 migrationRateMatrix <- function(dispersion){
@@ -19,7 +35,7 @@ migrationRateMatrix <- function(dispersion){
   #
   # Returns:
   #   A migration rate matrix (note that rowSums and colSums are not 1: cause of bordure effect, individuals go "out of the world")
-  return(dispersion/max(c(colSums(dispersion),rowSums(dispersion))))
+  return(dispersion/rowSums(dispersion))
 }
 
 distanceMatrixFromRaster2 =

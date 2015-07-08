@@ -30,13 +30,10 @@ EnvData <- EnvTimeSeries(list(Rainf,Tmin,Tmax,Tmean,PlantQ))
 plot(getDay(EnvData,1))
 #bidon <- EnvTimeSerie(list(crop(getValues(Tmean),extent(getValues(Tmean))-2),getDates(Tmean),"Rainf"))
 #EnvData <- EnvTimeSeries(list(Rainf,bidon))
-ED <- EcoDay(list(array(0,dim=c(dim(getValues(Rainf))[1:2],5*10)),as.Date("2001-01-01"),getDay(EnvData,1),stages=c("Egg","PhyloL","StembL","Pupae","Adult"),ageClasses=c(1:10,1:10,1:10,1:10,1:10)))
+ED <- EcoDay(list(array(0,dim=c(dim(getValues(Rainf))[1:2],5*10)),as.Date("2001-01-01"),getDay(EnvData,1),stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10)))
 ED1 <- mySetValues(ED,1)
-EDegg <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),1:10)
-EDphL <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),11:20)
-EDegg <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),1:10)
-EDegg <- mySetValues(ED,array(1,c(dim(ED@values)[1:2],10)),1:10)
-
+distanceMatrix <- distanceMatrixFromRaster2(getEnvDay(ED))
+landDim <- dim(getArray(ED,NULL))[1:2]
 getDay(EnvData,1)
 
 

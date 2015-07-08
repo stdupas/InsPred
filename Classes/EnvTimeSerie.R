@@ -35,12 +35,6 @@ setMethod(f="getValues",
             return(object@values)
           })
 
-setMethod(f="getArray",
-          signature = "EnvTimeSerie",
-          definition = function(object){
-            return(as.array(object@values))
-          })
-
 setMethod(f="getDates",
           signature = "EnvTimeSerie",
           definition = function(object){

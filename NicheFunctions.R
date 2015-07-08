@@ -115,9 +115,9 @@ plantQuality <- function(env_time_series,variable,number_of_days)
   #
   #
   env_time_serie <- getEnvTimeSerie(env_time_series,variable)
-  env_time_array <- getArray(env_time_serie)
+  env_time_array <- as.array(getValues(env_time_serie))
   env_time_array_nb_day_added <- env_time_array[,,c(rep(1,number_of_days-1),1:dim(env_time_array)[3])]
-  plant_quality_array <- getArray(env_time_serie)
+  plant_quality_array <- as.array(getValues(env_time_serie))
   for (day in 1:dim(env_time_array)[3]){
     plant_quality_array[,,day] <- rowMeans(env_time_array_nb_day_added[,,day:(day+number_of_days-1)],dims=2)
   }
@@ -125,7 +125,7 @@ plantQuality <- function(env_time_series,variable,number_of_days)
 }
 
 
-numericalResponse(pyramide_d_age,brickDay)
+numericalResponse <- function(ageStructure,EnvDay)
 {
   # arguments :
   # EcolData
@@ -134,7 +134,6 @@ numericalResponse(pyramide_d_age,brickDay)
   # egg_survival = matrix or scalar of egg survival probability per day
   # value : transition matrix 
   #
-  
-  
+  ageStructure
 }
 

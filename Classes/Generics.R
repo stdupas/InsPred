@@ -8,12 +8,24 @@ setGeneric(
   def = function(object, file) { return(standardGeneric("myWrite"))})
 
 setGeneric(
+  name = "getArray",
+  def = function(object1,object2) { return(standardGeneric("getArray"))})
+
+setGeneric(
   name = "getValues",
   def = function(object) { return(standardGeneric("getValues"))})
 
 setGeneric(
+  name = "getStage",
+  def = function(object1) { return(standardGeneric("getStage"))})
+
+setGeneric(
   name = "mySetValues",
   def = function(object,newValues,Subset) { return(standardGeneric("mySetValues"))})
+
+setGeneric(
+  name = "myAddValues",
+  def = function(object,newValues,Subset) { return(standardGeneric("myAddValues"))})
 
 setGeneric(
   name = "etsDim",
@@ -28,8 +40,8 @@ setGeneric(
   def = function(object1,object2) { return(standardGeneric("getEnvTimeSerie"))})
 
 setGeneric(
-  name = "getArray",
-  def = function(object) { return(standardGeneric("getArray"))})
+  name = "getEnvDay",
+  def = function(object) { return(standardGeneric("getEnvDay"))})
 
 setGeneric(
   name = "getDates",

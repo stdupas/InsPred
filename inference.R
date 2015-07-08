@@ -18,20 +18,27 @@ expectedInd.2 <- function(parameters){
   #                K.Rainf.Xmin=,K.Rainf.Xmax=,K.Rainf.Xopt=,K.Rainf.Yopt=,
   #                K.Tminf.Xmin=,K.Tmin.Xmax=,K.Tmin.Xopt=,K.Tmin.Yopt=,
   #                K.Tmax.Xmin=,K.Tmax.Xmax=,K.Tmax.Xopt=,K.Tmax.Yopt=,
-  #                disp.D.alpha=,disp.D.beta=)
+  #                disp.D.alpha=100,disp.D.beta=2)
   #
   refStack <- getDay(EnvData,1)
   
-  Current <- mySetValues(EcoDay(list(array(0,dim=c(dim(refStack)[1:2],5*10)),
+  Previous <- mySetValues(EcoDay(list(array(0,dim=c(dim(refStack)[1:2],5*10)),
                                      as.Date("2001-01-01"),getDay(EnvData,1),
-                                     stages=c("Egg","PhyloL","StembL","Pupae","Adult"),
-                                     ageClasses=c(1:10,1:10,1:10,1:10,1:10))),
-                         array(1,c(dim(ED@values)[1:2],10)),41:50)
-  Next <- Current
+                                     stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10))),
+                         array(1,c(dim(ED@values)[1:2],10)),"Adult")
+  
+  Current <- EcoDay(list(array(0,dim=c(dim(refStack)[1:2],5*10)),
+                      as.Date("2001-01-01"),getDay(EnvData,1),
+                      stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10)
+                      ))  
   Day=1
+  m <- migrationRateMatrix(fatTail1(distanceMatrix,alpha=disp.D.alpha,beta=disp.D.beta))
   while (Day < etsDim(EnvData)[[1]][3])
   {
-    if (Day<burnin_period) 
+    if (Day<burnin_period) Current <- myAddValues(Current,1,"Adult")
+    Current <- mySetValues(Current,
+                           matrix(values(raster(getArray(Current,which(getStage(Current)=="Adult")[1])))%*%m,nrow=landDim[1],ncol=landDim[2],byrow=TRUE),
+                           which(getStage(Current)=="Adult")[1])
   }
   # Survival arrays eggs, phyloLarvae, and pupae (do not depend on density, only on parameters)
   
