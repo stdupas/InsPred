@@ -1,4 +1,4 @@
-
+ 
 conquadraticSkewed1 <- function(x, Xmin, Xmax, Xopt, Yopt)
 {
   # Asymetric concave conquadratic function within an enveloppe, else returns 0.
@@ -122,6 +122,40 @@ plantQuality <- function(env_time_series,variable,number_of_days)
     plant_quality_array[,,day] <- rowMeans(env_time_array_nb_day_added[,,day:(day+number_of_days-1)],dims=2)
   }
   EnvTimeSerie(list(plant_quality_array,getDates(env_time_serie),"plantQ",extent(getValues(env_time_serie))))
+}
+
+timeSpendInAgeClass <-function(devRate) 
+{
+  # arguments:
+  # - devRate : vector of development rate for each age class
+  # Value : 
+  # - vector of time spent in the age class = 1 /deVRate
+  1/devRate
+}
+
+timeSpentInDayWhenLeavingAgeClass <- function(devRate)
+{
+  # arguments:
+  # - devRate : vector of development rate for each age class
+  # Value : 
+  # - matrix of time spent in the day when leaving the age class 
+  # row number gives the age class at 0h
+  # column number gives the age class to be considered
+  #
+  # devRate=c(rep(2,10),rep(1.5,10),rep(.5,10),rep(5,10),rep(3,10))
+  TimeSpentInEachClass=1/devRate
+  b <- t(matrix(c(1:n,rep(0,n+1)),nrow=2*n+1,ncol=n,byrow=TRUE)[(1:n)*2-1,]) # 2 dimensions
+  b <- matrix(1:n,nrow=n,byrow=TRUE)
+  c <- array(array(c(b,rep(0,prod(dim(b))+dim(b)[1])),dim=c(2*n+n^2,n,n)),dim=c(n,n,2*n+2))[,,2*(1:n+1)] # 3 dimensions
+  t(rowSums(c,dims=2))
+  
+  TimeSpentInEachClass=1/devRate;n=length(TimeSpentInEachClass)
+  b <- t(matrix(c(TimeSpentInEachClass,rep(0,n+1)),nrow=2*n+1,ncol=n,byrow=TRUE)[(1:n)*2-1,]) # 2 dimensions
+  b <- matrix(1:n,nrow=n,ncol=n,byrow=TRUE)*upper.tri(matrix(1,nrow=n,ncol=n))
+  c <- array(array(c(b,rep(0,prod(dim(b))+dim(b)[1])),dim=c(2*n+n^2,n,n)),dim=c(n,n,2*n+2))[,,2*(1:n+1)] # 3 dimensions
+  TR <- t(rowSums(c,dims=2))
+  TR<1
+
 }
 
 
