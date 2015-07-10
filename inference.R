@@ -37,7 +37,7 @@ expectedInd.2 <- function(parameters){
   {
     if (Day<burnin_period) Current <- myAddValues(Current,1,"Adult")
     Current <- mySetValues(Current,
-                           matrix(values(raster(getArray(Current,which(getStage(Current)=="Adult")[1])))%*%m,nrow=landDim[1],ncol=landDim[2],byrow=TRUE),
+                           getMatrix(Current,"Adult"),
                            which(getStage(Current)=="Adult")[1])
   }
   # Survival arrays eggs, phyloLarvae, and pupae (do not depend on density, only on parameters)

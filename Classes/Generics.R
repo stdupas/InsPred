@@ -12,6 +12,10 @@ setGeneric(
   def = function(object1,object2) { return(standardGeneric("getArray"))})
 
 setGeneric(
+  name = "getMatrix",
+  def = function(object1,object2) { return(standardGeneric("getMatrix"))})
+
+setGeneric(
   name = "getValues",
   def = function(object) { return(standardGeneric("getValues"))})
 
