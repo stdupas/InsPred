@@ -101,13 +101,16 @@ distMat <- distanceMatrixFromRaster2(object = rasterStack)
 # on calcule la moyenne sur les nDaysAveraged précedents jours
 EnvDataAveraged <- computeMeanEnvData(EnvData, vars=c("Rainf","Tmin","Tmax"), nDaysAveraged)
 
+#######################################################
+##############Fontion en 49 est meilleure##############
+#######################################################
 #On récupère les dates d'interêt seulement.
-EnvData2 <- EnvData[,colnames(parentSize),]
-Tmean <- (EnvData2[,,2]+EnvData2[,,3])/2 -273.15
-DevRateEgg <- developmentRateLogan(Tmean,species="Bf",life_stage="Egg")
-DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="phyloLarvae")
-DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="stemLarvae")
-DevRatePup <- developmentRateLogan(Tmean,species="Bf",life_stage="Pupae")
+#EnvData2 <- EnvData[,colnames(parentSize),]
+#Tmean <- (EnvData2[,,2]+EnvData2[,,3])/2 -273.15
+#DevRateEgg <- developmentRateLogan(Tmean,species="Bf",life_stage="Egg")
+#DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="phyloLarvae")
+#DevRateLar <- developmentRateLogan(Tmean,species="Bf",life_stage="stemLarvae")
+#DevRatePup <- developmentRateLogan(Tmean,species="Bf",life_stage="Pupae")
 
 
 EnvDataAveraged <- EnvDataAveraged[,colnames(parentSize),]

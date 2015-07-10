@@ -124,13 +124,14 @@ plantQuality <- function(env_time_series,variable,number_of_days)
   EnvTimeSerie(list(plant_quality_array,getDates(env_time_serie),"plantQ",extent(getValues(env_time_serie))))
 }
 
-timeSpendInAgeClass <-function(devRate) 
+##########Time to be spent in Age Class################
+classTime <-function(devRate) 
 {
   # arguments:
   # - devRate : vector of development rate for each age class
   # Value : 
   # - vector of time spent in the age class = 1 /deVRate
-  1/devRate
+  values(1/devRateLogan)/10
 }
 
 timeSpentInDayWhenLeavingAgeClass <- function(devRate)

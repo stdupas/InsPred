@@ -21,8 +21,10 @@ setMethod(f="getArray",
 
 setMethod(f="getMatrix",
           signature = "EcoDay",
+          # Used for calculating 'Current' migration for 'Adult' stage.
+          # This methode is used in Inference
           definition = function(object1,object2){
-            if ((class(object1)!= "EcoDay")|(class(object2)!= "character"))stop("object1 is not an 'EcoDay' or object2 is not a 'character' ! ")
+            if ((class(object1)!= "EcoDay")|(class(object2)!= "character"))stop(" either object1 is not an 'EcoDay' or object2 is not a 'character' ! ")
             matrix(values(raster(getArray(object1,which(getStage(object1)==object2)[1])))%*%m,nrow=landDim[1],ncol=landDim[2],byrow=TRUE)
           })
 

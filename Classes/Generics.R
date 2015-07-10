@@ -21,7 +21,7 @@ setGeneric(
 
 setGeneric(
   name = "getStage",
-  def = function(object1) { return(standardGeneric("getStage"))})
+  def = function(object) { return(standardGeneric("getStage"))})
 
 setGeneric(
   name = "mySetValues",
