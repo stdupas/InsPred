@@ -22,12 +22,12 @@ expectedInd.2 <- function(parameters){
   #
   refStack <- getDay(EnvData,1)
   
-  Previous <- mySetValues(EcoDay(list(array(0,dim=c(dim(refStack)[1:2],5*10)),
+  Previous <- mySetValues(EcoDay(list(array(0,dim=c(landDim,5*10)),
                                      as.Date("2001-01-01"),getDay(EnvData,1),
                                      stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10))),
-                         array(1,c(dim(ED@values)[1:2],10)),"Adult")
+                         array(1,c(landDim,10)),"Adult")
   
-  Current <- EcoDay(list(array(0,dim=c(dim(refStack)[1:2],5*10)),
+  Current <- EcoDay(list(array(0,dim=c(landDim,5*10)),
                       as.Date("2001-01-01"),getDay(EnvData,1),
                       stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10)
                       ))  

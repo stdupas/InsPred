@@ -85,3 +85,7 @@ setGeneric(
 setGeneric(
   name = "computeDistanceMatrix",
   def = function(object, con, description) { return(standardGeneric("computeDistanceMatrix"))})
+
+setGeneric(
+  name = "transition",
+  def = function(object, con, description) { return(standardGeneric("transition"))})

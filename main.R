@@ -17,6 +17,7 @@ source("Classes/ModelFunction.R")
 source("Classes/Environment.R")
 source("Classes/EnvTimeSerie.R")
 source("Classes/EnvTimeSeries.R")
+source("Classes/ageClassTransition.R")
 source("Classes/EcoDay.R")
 
 burnin_period=100

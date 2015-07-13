@@ -1,5 +1,5 @@
 setClass("EcoDay",
-         representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character"),
+         representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character", transition = "ageClassTransition"),
          prototype(values = plot(hist(round(rgamma(20,5,2))),main="ecol data age classes",breaks=11,xlab="age")),
          validity = function(object){
            if (length(object@dates)!=1) stop("EcoDay has to contain one and only one date") else {
@@ -35,6 +35,13 @@ setMethod(f="getEnvDay",
             return(object@envDay)
           })
 
+setMethod(f="transition",
+          signature= "Ecoday",
+          definition = function(object){
+            return(object@transition)
+          }
+          )
+
 setMethod(f="getStage",
           signature = "EcoDay",
           definition = function(object){
@@ -67,7 +74,7 @@ setMethod(f="mySetValues",
 
 setMethod(f="myAddValues",
           signature = "EcoDay",
-          definition = function(object,newValues,Subset){
+          definition = function(object,ageClassTransition){
             # object : the EcoDay variable to set
             # newValues : the new values
             # Subset : the part of ecoday to set by new values (age class vector)
@@ -88,6 +95,12 @@ setMethod(f="myAddValues",
             }
             return(object)
           })
+
+setMethod(f="myAddValues",
+          signature = "EcoDay",
+          definition = function(object,newValues,Subset){return(object)
+          })
+
 
 EcoDay <- function(x) 
 {
