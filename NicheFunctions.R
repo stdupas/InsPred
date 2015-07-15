@@ -22,7 +22,7 @@ conquadraticSkewed1 <- function(x, Xmin, Xmax, Xopt, Yopt)
 }
 
 
-developmentRateLogan <- function(T,species,life_stage)
+developmentRateLogan <- function(T, species, life_stage)
 {
   parameters <- switch (species,
                         Bf = switch (life_stage,
