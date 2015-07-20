@@ -44,7 +44,7 @@ ageClassTransition <- function(envtimeserie, developmentRateFunction, stages, da
   names(number_of_age_class_per_stage) <- levels(as.factor(stages))
   
   ### Fill the array for transition between substages of eggs/larvae/adult
-  transition <- array()
+  transition <- array(0,dim=c(dim(getValues(Tmean))[1],dim(getValues(Tmean))[2],length(dates),length(stages)-1,2))
   cumT <- 0
   for (X in 1:dim(getValues(Tmean))[1]){ # X <- 1 
     for (Y in 1:dim(getValues(Tmean))[2]){ # Y <- 1

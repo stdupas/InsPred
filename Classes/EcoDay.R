@@ -1,5 +1,5 @@
 setClass("EcoDay",
-         representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character", transition = "ageClassTransition"),
+         representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character"),
          prototype(values = plot(hist(round(rgamma(20,5,2))),main="ecol data age classes",breaks=11,xlab="age")),
          validity = function(object){
            if (length(object@dates)!=1) stop("EcoDay has to contain one and only one date") else {
@@ -19,13 +19,13 @@ setMethod(f="getArray",
             }
           })
 
-setMethod(f="getMatrix",
+setMethod(f="getMigratedMatrix",
           signature = "EcoDay",
           # Used for calculating 'Current' migration for 'Adult' stage.
           # This methode is used in Inference
-          definition = function(object1,object2){
+          definition = function(object1,object2,object3){
             if ((class(object1)!= "EcoDay")|(class(object2)!= "character"))stop(" either object1 is not an 'EcoDay' or object2 is not a 'character' ! ")
-            matrix(values(raster(getArray(object1,which(getStage(object1)==object2)[1])))%*%m,nrow=landDim[1],ncol=landDim[2],byrow=TRUE)
+            matrix(values(raster(getArray(object1,which(getStage(object1)==object2)[1])))%*%object3,nrow=landDim[1],ncol=landDim[2],byrow=TRUE)
           })
 
 
@@ -74,24 +74,24 @@ setMethod(f="mySetValues",
 
 setMethod(f="myAddValues",
           signature = "EcoDay",
-          definition = function(object,ageClassTransition,){
+          definition = function(object,newValues,Subset){
             # object : the EcoDay variable to set
             # newValues : the new values
             # Subset : the part of ecoday to set by new values (age class vector)
-            if (((class(ageClassTransition)=="numeric")|(class(ageClassTransition)=="array"))&(class(Subset)=="character")) {
-              if (Subset=="all") object@values = object@values+array(ageClassTransition,dim(object@values))
+            if (((class(newValues)=="numeric")|(class(newValues)=="array"))&(class(Subset)=="character")) {
+              if (Subset=="all") object@values = object@values+array(newValues,dim(object@values))
               if (Subset%in%object@stages) { object@values[,,which(object@stages%in%Subset)] = object@values[,,which(object@stages%in%Subset)] +
-                                               array(ageClassTransition,c(dim(object@values)[1:2],length(which(object@stages%in%Subset))))
+                                               array(newValues,c(dim(object@values)[1:2],length(which(object@stages%in%Subset))))
               }
             }
             if (class(Subset)=="numeric") Subset <- as.integer(Subset)
-            if ((class(ageClassTransition)=="array")&(length(Subset)==1)) ageClassTransition<-matrix(ageClassTransition,nrow=dim(ageClassTransition)[1],ncol=dim(ageClassTransition)[2])
-            if ((class(ageClassTransition)=="matrix")&(length(Subset)==1)&(class(Subset)=="integer")) {
-              object@values[,,Subset] = object@values[,,Subset]+ageClassTransition
+            if ((class(newValues)=="array")&(length(Subset)==1)) newValues<-matrix(newValues,nrow=dim(newValues)[1],ncol=dim(newValues)[2])
+            if ((class(newValues)=="matrix")&(length(Subset)==1)&(class(Subset)=="integer")) {
+              object@values[,,Subset] = object@values[,,Subset]+newValues
             }
-            if ((class(ageClassTransition)=="array")&(class(Subset)=="integer")&(length(Subset)!=1)) { 
-              if (any(dim(ageClassTransition)!=c(dim(object@values)[1:2],length(Subset)))) stop("new values array has wrong dimension")
-              object@values[,,Subset] = object@values[,,Subset]+ageClassTransition
+            if ((class(newValues)=="array")&(class(Subset)=="integer")&(length(Subset)!=1)) { 
+              if (any(dim(newValues)!=c(dim(object@values)[1:2],length(Subset)))) stop("new values array has wrong dimension")
+              object@values[,,Subset] = object@values[,,Subset]+newValues
             }
             return(object)
           })
@@ -109,5 +109,5 @@ EcoDay <- function(x)
   # - [[2]] a one day Date class variable 
   # - [[3]] an raster brick class (X,Y dimension should correspond with the array) with environmental values of the day 
   # - [[4]] the vector stage name for each age class (length = the number of age classes)
-new("EcoDay",values=x[[1]],dates=x[[2]],envDay=x[[3]],stages=x[[4]], transition=x[[5]])
+new("EcoDay",values=x[[1]],dates=x[[2]],envDay=x[[3]],stages=x[[4]])
 }
