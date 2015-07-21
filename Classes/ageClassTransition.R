@@ -70,5 +70,5 @@ ageClassTransition <- function(envtimeserie, developmentRateFunction, stages, da
         }
       }
     }
-new("ageClassTransition", list(transition=transition,stages,dates,extent(getValues(envtimeserie)),res))
+new("ageClassTransition",transition=transition,stages,dates,extent(getValues(envtimeserie)),res)
 }
