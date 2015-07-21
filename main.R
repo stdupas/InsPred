@@ -38,6 +38,7 @@ plot(getDay(EnvData,1))
 #EnvData <- EnvTimeSeries(list(Rainf,bidon))
 stages <- rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10)
 ED <- EcoDay(list(array(0,dim = c(dim(getValues(Rainf))[1:2],5*10)),
+                  
                   as.Date("2001-01-01"),
                   getDay(EnvData,1),
                   stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10))
