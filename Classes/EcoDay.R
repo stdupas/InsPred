@@ -101,6 +101,20 @@ setMethod(f="myAddValues",
           definition = function(object,newValues,Subset){return(object)
           })
 
+setMethod(f="myEggs",
+          signature = "EcoDay",
+          definition = function(object,){return(object)
+          }) # between age stages (adtults to egg first age class)
+
+setMethod(f="myDensityIndependence",
+          signature = "EcoDay",
+          definition = function(object,){return(object)
+          }) # within age class independent of density
+
+setMethod(f="myDensityDependence",
+          signature = "EcoDay",
+          definition = function(object,){return(object)
+          }) # within age class dependent of density
 
 EcoDay <- function(x) 
 {

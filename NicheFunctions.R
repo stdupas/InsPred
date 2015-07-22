@@ -34,7 +34,7 @@ developmentRateLogan <- function(T, species, life_stage)
                         ),
                         Sc = switch (life_stage,
                                      Egg = c(Y=0.010,Tmax=31.93,rho=0.110,V=1.786),
-                                     PhyloLarvae = c(Y=3*0.002,Tmax=35.79,rho=0.150,V=5.695),
+                                     PhyloL = c(Y=3*0.002,Tmax=35.79,rho=0.150,V=5.695),
                                      StembL = c(Y=1.5*0.002,Tmax=35.79,rho=0.150,V=5.695),
                                      Pupae = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427),
                                      Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
@@ -48,7 +48,7 @@ developmentRateLogan <- function(T, species, life_stage)
                         )
   )
   r <-  parameters["Y"]*(exp(parameters["rho"]*T)-exp(parameters["rho"]*parameters["Tmax"]-((parameters["Tmax"]-T)/parameters["V"])))
-  r
+ (r>0)*r+(r<=0)*1E-5
 }
 
 ######## TO BE REMOVED ###################

@@ -89,3 +89,16 @@ setGeneric(
 setGeneric(
   name = "transition",
   def = function(object, con, description) { return(standardGeneric("transition"))})
+
+setGeneric(
+  name = "myEggs",
+  def = function(object, con, description) { return(standardGeneric("myEggs"))})
+
+setGeneric(
+  name = "myDensityIndependence",
+  def = function(object, con, description) { return(standardGeneric("myDensityIndependence"))})
+
+setGeneric(
+  name = "myDensityDependence",
+  def = function(object, con, description) { return(standardGeneric("myDensityDependence"))})
+

@@ -48,8 +48,9 @@ ED1 <- mySetValues(ED,1,"Adult")
 distanceMatrix <- distanceMatrixFromRaster2(getEnvDay(ED))
 landDim <- dim(getArray(ED,NULL))[1:2]
 getDay(EnvData,1)
-
-
+a <- as.Date(getDates(EnvData))
+ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,getDates(Tmean),"Bf")
+ageClassTransition_numeric(devEnvVar=28,developmentRateLogan,"Bf",stages,c(Adult=10,Egg=10, PhyloL=10,  Pupae=10, StembL=10 ))
 
 function(x) 
 {

@@ -14,11 +14,11 @@ expectedInd.2 <- function(parameters){
   #
   #
   # Variables: 
-  # parameters = c(r0=10,r.Rainf.Xmin=,r.Rainf.Xmax=,r.Rainf.Xopt=,r.Rainf.Yopt=,
-  #                K.Rainf.Xmin=,K.Rainf.Xmax=,K.Rainf.Xopt=,K.Rainf.Yopt=,
-  #                K.Tminf.Xmin=,K.Tmin.Xmax=,K.Tmin.Xopt=,K.Tmin.Yopt=,
-  #                K.Tmax.Xmin=,K.Tmax.Xmax=,K.Tmax.Xopt=,K.Tmax.Yopt=,
-  #                disp.D.alpha=100,disp.D.beta=2)
+   parameters = c(r0=10,r.Rainf.Xmin=0,r.Rainf.Xmax=0.0003,r.Rainf.Xopt=0.0001,r.Rainf.Yopt=15,
+                  K.Rainf.Xmin=0,K.Rainf.Xmax=0.0003,K.Rainf.Xopt=0.0001,K.Rainf.Yopt=5,
+                  K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
+                  K.Tmax.Xmin=25,K.Tmax.Xmax=35,K.Tmax.Xopt=22,K.Tmax.Yopt=5,
+                  disp.D.alpha=100,disp.D.beta=2)
   #
   refStack <- getDay(EnvData,1)
   
@@ -32,13 +32,15 @@ expectedInd.2 <- function(parameters){
                       stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10)
                       ))  
   Day=1
-  m <- migrationRateMatrix(fatTail1(distanceMatrix,alpha=disp.D.alpha,beta=disp.D.beta))
+  m <- migrationRateMatrix(fatTail1(distanceMatrix,alpha=parameters["disp.D.alpha"],beta=parameters["disp.D.beta"]))
   while (Day < etsDim(EnvData)[[1]][3])
   {
     if (Day<burnin_period) Current <- myAddValues(Current,1,"Adult")
     Current <- mySetValues(Current,
                            getMigratedMatrix(Current,"Adult",m),
                            which(getStage(Current)=="Adult")[1])
+    
+    
   }
   # Survival arrays eggs, phyloLarvae, and pupae (do not depend on density, only on parameters)
   
