@@ -29,7 +29,7 @@ setGeneric(
 
 setGeneric(
   name = "myAddValues",
-  def = function(object,ageClassTransition,Subset,...) { return(standardGeneric("myAddValues"))})
+  def = function(object,newValues,Subset) { return(standardGeneric("myAddValues"))})
 
 setGeneric(
   name = "etsDim",
@@ -75,30 +75,28 @@ setGeneric(
   def = function(object) { return(standardGeneric("getParameters"))})
 
 setGeneric(
+  name = "transition",
+  def = function(object) { return(standardGeneric("transition"))})
+
+setGeneric(
+  name = "fecundity",
+  def = function(object,fecun) { return(standardGeneric("fecundity"))})
+
+setGeneric(
+  name = "survival",
+  def = function(object,density_dependence) { return(standardGeneric("survival"))})
+
+
+## to be removed (from Arnaud)
+setGeneric(
   name = "applyFunction",
   def = function(object, xval) { return(standardGeneric("applyFunction"))})
 
 setGeneric(
   name = "applyModel",
-  def = function(object) { return(standardGeneric("applyModel"))})
+  def = function(object,...) { return(standardGeneric("applyModel"))})
 
 setGeneric(
   name = "computeDistanceMatrix",
   def = function(object, con, description) { return(standardGeneric("computeDistanceMatrix"))})
-
-setGeneric(
-  name = "transition",
-  def = function(object, con, description) { return(standardGeneric("transition"))})
-
-setGeneric(
-  name = "myEggs",
-  def = function(object, con, description) { return(standardGeneric("myEggs"))})
-
-setGeneric(
-  name = "myDensityIndependence",
-  def = function(object, con, description) { return(standardGeneric("myDensityIndependence"))})
-
-setGeneric(
-  name = "myDensityDependence",
-  def = function(object, con, description) { return(standardGeneric("myDensityDependence"))})
 

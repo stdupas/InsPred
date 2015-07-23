@@ -14,7 +14,9 @@ expectedInd.2 <- function(parameters){
   #
   #
   # Variables: 
-   parameters = c(r0=10,r.Rainf.Xmin=0,r.Rainf.Xmax=0.0003,r.Rainf.Xopt=0.0001,r.Rainf.Yopt=15,
+   parameters = c(fecun=10,
+                  
+                  r.fecun.Rainf.Xmax=0.0003,r.Rainf.Xopt=0.0001,r.Rainf.Yopt=15,
                   K.Rainf.Xmin=0,K.Rainf.Xmax=0.0003,K.Rainf.Xopt=0.0001,K.Rainf.Yopt=5,
                   K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
                   K.Tmax.Xmin=25,K.Tmax.Xmax=35,K.Tmax.Xopt=22,K.Tmax.Yopt=5,
@@ -40,6 +42,7 @@ expectedInd.2 <- function(parameters){
                            getMigratedMatrix(Current,"Adult",m),
                            which(getStage(Current)=="Adult")[1])
     
+    Current <- fecundity(Current,fecun)
     
   }
   # Survival arrays eggs, phyloLarvae, and pupae (do not depend on density, only on parameters)

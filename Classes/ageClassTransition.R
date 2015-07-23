@@ -3,7 +3,7 @@ setClass("ageClassTransition",
          #prototype(transition = plot(raster(matrix(c(0.1,0.9,0,0,0,0,0,0.2,0.8,0,0,0,0,0,.5,.5,0,0,0,0,0,0.8,0.2,0,0,0,0,0,.9,.1,0,0,0,0,0,.1),nrow=6,ncol=6,byrow=TRUE)))),
          validity = function(object){
            # transtion = array dim(number of X, number of Y, number of dates, number of age classes, number of age classes)
-           if (dim(transition)[3]!=length(dates)) stop("third dimension of values array is not equal to number of dates")
+           if (dim(object@transition)[3]!=length(object@dates)) stop("third dimension of values array is not equal to number of dates")
            #if ((dim(transition)[4]!=length(stages))|(dim(transition)[5]!=length(stages))) stop("fourth and/or fifth dimension of transiton array does not have the same length as stages vector")
          }
 )
@@ -12,6 +12,12 @@ setMethod(f="getDates",
           signature = "ageClassTransition",
           definition = function(object){
             return(object@dates)
+          })
+
+setMethod(f="getValues",
+          signature = "ageClassTransition",
+          definition = function(object){
+            return(object@transition)
           })
 
 ageClassTransition_numeric <- function(devEnvVar,developmentRateFunction,species,stages,number_of_age_class_per_stage)
@@ -41,7 +47,7 @@ mat
 }
 
 
-ageClassTransition <- function(envtimeserie, developmentRateFunction, stages, dates, species,transition)
+ageClassTransition <- function(envtimeserie, developmentRateFunction, stages, dates, species)
   # x=list(envtimeserie, developmentRateFunction, stages, dates, species,transition)
 {
   # Constructor of age class transition matrix

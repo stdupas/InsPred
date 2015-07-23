@@ -96,25 +96,22 @@ setMethod(f="myAddValues",
             return(object)
           })
 
-setMethod(f="myAddValues",
+setMethod(f="fecundity",
           signature = "EcoDay",
-          definition = function(object,newValues,Subset){return(object)
-          })
-
-setMethod(f="myEggs",
-          signature = "EcoDay",
-          definition = function(object,){return(object)
+          definition = function(object,fecun){
+            object@values
+            object <- myAddValues(object,rowSums(object@values[,,which(object@stages=="Adult")]*fecun,dims=2),Subset=1)
+            return(object)                         
           }) # between age stages (adtults to egg first age class)
 
-setMethod(f="myDensityIndependence",
+setMethod(f="survival",
           signature = "EcoDay",
-          definition = function(object,){return(object)
+          definition = function(object,density_dependence){
+            if (density_dependence == FALSE){
+              
+            }
+            return(object)
           }) # within age class independent of density
-
-setMethod(f="myDensityDependence",
-          signature = "EcoDay",
-          definition = function(object,){return(object)
-          }) # within age class dependent of density
 
 EcoDay <- function(x) 
 {

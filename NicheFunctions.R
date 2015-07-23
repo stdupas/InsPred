@@ -1,23 +1,24 @@
  
-conquadraticSkewed1 <- function(x, Xmin, Xmax, Xopt, Yopt)
+conquadraticSkewed1 <- function(x, parameters)
 {
   # Asymetric concave conquadratic function within an enveloppe, else returns 0.
   #
   # Args:
   #   x : numeric providing the values of variable to calculate reaction norm
-  #   Xmin: start of the enveloppe
-  #   Xmax: end of the enveloppe
-  #   Xopt: the value that maximises the function
-  #   Yopt: the maximum value of the function
+  #   parameters :  a list of:
+  #     parameters[["Xmin"]]: start of the enveloppe
+  #     parameters[["Xmax"]]: end of the enveloppe
+  #     parameters[["Xopt"]]: the value that maximises the function
+  #     parameters[["Yopt"]]: the maximum value of the function
   #
   # Returns:
   #   The value of reaction norm
-  if(Xopt>=Xmax) Xopt=Xmax-Xmax/100000
-  if(Xopt<=Xmin) Xopt=Xmin+Xmin/100000
-  a1=(Xmin-Xmax)/(2*(Xmin-Xopt))
-  a2=(Xmax-Xmin)/(2*(Xmax-Xopt))
-  Xprime<- (x<Xopt)*(a1*x+Xmin*(1-a1))+(x>=Xopt)*(a2*x+Xmax*(1-a2))
-  y <- -4*Yopt/(Xmax-Xmin)^2*(Xprime-Xmax)*(Xprime-Xmin)*(x<=Xmax)*(x>=Xmin)
+  if(parameters[["Xopt"]]>=parameters[["Xmax"]]) parameters[["Xopt"]]=parameters[["Xmax"]]-parameters[["Xmax"]]/100000
+  if(parameters[["Xopt"]]<=parameters[["Xmin"]]) parameters[["Xopt"]]=parameters[["Xmin"]]+parameters[["Xmin"]]/100000
+  a1=(parameters[["Xmin"]]-parameters[["Xmax"]])/(2*(parameters[["Xmin"]]-parameters[["Xopt"]]))
+  a2=(parameters[["Xmax"]]-parameters[["Xmin"]])/(2*(parameters[["Xmax"]]-parameters[["Xopt"]]))
+  Xprime<- (x<parameters[["Xopt"]])*(a1*x+parameters[["Xmin"]]*(1-a1))+(x>=parameters[["Xopt"]])*(a2*x+parameters[["Xmax"]]*(1-a2))
+  y <- -4*parameters[["Yopt"]]/(parameters[["Xmax"]]-parameters[["Xmin"]])^2*(Xprime-parameters[["Xmax"]])*(Xprime-parameters[["Xmin"]])*(x<=parameters[["Xmax"]])*(x>=parameters[["Xmin"]])
   return(y)
 }
 

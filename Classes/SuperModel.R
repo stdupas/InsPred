@@ -1,11 +1,9 @@
 setClass("SuperModel",
-         representation(models = "list"),
-         prototype(models = list(new("Model"), new("Model"))),
+         representation(operator="character",stages="character",models="list"),
+         prototype(operator="+",stages=c("Egg"),models = list(model(varName="Tmin", fun=conquadraticSkewed1), model(varName="Tmax", fun=conquadraticSkewed1))),
          validity = function(object) { ## object : nom reserve !
-           if (FALSE)
-             return(FALSE)
-           else
-             return(TRUE)
+           if (class(try(do.call(operator,list(1,2))))=="try-error") stop("super model operator is not an operator")
+           if (any(lapply(models,FUN="class")!="model")) stop("some models are not of model class")
          }
 )
 
