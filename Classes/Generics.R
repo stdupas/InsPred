@@ -45,7 +45,7 @@ setGeneric(
 
 setGeneric(
   name = "getEnvDay",
-  def = function(object) { return(standardGeneric("getEnvDay"))})
+  def = function(object1,...) { return(standardGeneric("getEnvDay"))})
 
 setGeneric(
   name = "getDates",
@@ -79,8 +79,8 @@ setGeneric(
   def = function(object) { return(standardGeneric("transition"))})
 
 setGeneric(
-  name = "fecundity",
-  def = function(object,fecun) { return(standardGeneric("fecundity"))})
+  name = "recruitment",
+  def = function(object,fecun) { return(standardGeneric("recruitment"))})
 
 setGeneric(
   name = "survival",

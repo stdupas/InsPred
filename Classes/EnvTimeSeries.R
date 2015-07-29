@@ -35,7 +35,7 @@ setMethod("etsDim",
 setMethod("getVarNames",
           signature = "EnvTimeSeries",
           function(object){
-            return(lapply(object@values,getVarNames))
+            return(unlist(lapply(object@values,getVarNames)))
           })
 
 setMethod(f="getDay",
@@ -46,7 +46,7 @@ setMethod(f="getDay",
             if (class(object2)=="numeric") object2 <- as.integer(object2)
             if (class(object2)!="integer") stop ("wrong class for second argument")
             tmp <-brick(lapply(lapply(getValues(object1),getValues),function(x) subset(x,object2)))
-            names(tmp) <- paste(getVarNames(object1),getDates(object1)[object2],sep="_")
+            names(tmp) <- getVarNames(object1)
             return(tmp)
           })
 
@@ -57,7 +57,7 @@ setMethod("getEnvTimeSerie",
           })
 
 EnvTimeSeries <- function(x)
-{
+{ names(x) <- unlist(lapply(x,getVarNames))
   # Arguments: a list of EntTimeSerie class variable
   new("EnvTimeSeries",values=x)
 }

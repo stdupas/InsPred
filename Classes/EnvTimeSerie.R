@@ -1,7 +1,7 @@
 setClass("EnvTimeSerie",
          representation(values = "RasterBrick",dates = "Date",varName= "character"),
          prototype(values = plot(rts(brick(raster(matrix(1))),as.Date(0)))),
-         contains = "Environnement",
+#         contains = "Environnement",
          validity = function(object){
            if (nlayers(object@values)!=length(object@dates)){
              stop("length values differ from length of dates")
@@ -56,12 +56,6 @@ setMethod("myMean",
             Object@values <- (object1@values+object2@values)/2
             Object
           })
-
-#setMethod("meanByDate",
-#          signature = "EnvTimeSerie",
-#          function(object1,object2){
-#            
-#          })
 
 setMethod("etsDim",
           signature = "EnvTimeSerie",

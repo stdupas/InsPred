@@ -1,22 +1,31 @@
 setClass("EcoDay",
-         representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character"),
+         representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character",variables="character"),
          prototype(values = plot(hist(round(rgamma(20,5,2))),main="ecol data age classes",breaks=11,xlab="age")),
          validity = function(object){
-           if (length(object@dates)!=1) stop("EcoDay has to contain one and only one date") else {
-             if (!all(dim(object@values)[1:2]==dim(object@envDay)[1:2])) stop("lanscape dimensions of ecolarray and envDay raster brick arguments do not match") else {
-              if (dim(object@values)[3]!=length(object@stages)) stop ("array and age classes dimensions do not fit") else {}
-             }
-           }
-           return(TRUE)
+           ifelse(length(object@dates)!=1, 
+                  stop("EcoDay has to contain one and only one date"),
+                  ifelse(!all(dim(object@values)[1:2]==dim(object@envDay)[1:2]),
+                         stop("lanscape dimensions of ecolarray and envDay raster brick arguments do not match"),
+                         ifelse(dim(object@values)[3]!=length(object@stages),
+                                stop ("array and age classes dimensions do not fit"),
+                                ifelse (any(names(object@envDay)!=object@variables),
+                                        stop ("envDay names do not correspond to variables"),
+                                        return(TRUE)))))
          }
 )
 
 setMethod(f="getArray",
           signature = "EcoDay",
-          definition = function(object1,object2){
+          definition = function(object1,object2){ # object2 is an age class
             if (is.null(object2)) return(object1@values) else {
               object1@values[,,object2]
             }
+          })
+
+setMethod(f="getVarNames",
+          signature = "EcoDay",
+          definition = function(object){
+            return(object@variables)
           })
 
 setMethod(f="getMigratedMatrix",
@@ -31,16 +40,10 @@ setMethod(f="getMigratedMatrix",
 
 setMethod(f="getEnvDay",
           signature = "EcoDay",
-          definition = function(object){
-            return(object@envDay)
+          definition = function(object1,object2=NULL){
+            ifelse (is.null(object2), return(object1@envDay), return(object1@envDay[[object2]]))
           })
 
-setMethod(f="transition",
-          signature= "EcoDay",
-          definition = function(object){
-            return(object@transition)
-          }
-          )
 
 setMethod(f="getStage",
           signature = "EcoDay",
@@ -96,13 +99,28 @@ setMethod(f="myAddValues",
             return(object)
           })
 
-setMethod(f="fecundity",
+setMethod(f="recruitment",
           signature = "EcoDay",
           definition = function(object,fecun){
             object@values
             object <- myAddValues(object,rowSums(object@values[,,which(object@stages=="Adult")]*fecun,dims=2),Subset=1)
             return(object)                         
           }) # between age stages (adtults to egg first age class)
+
+setMethod(
+  f = "ToStream",
+  signature = "EcoDay",
+  definition = function(object){
+    cat("slot 'array' dim = ", dim(object@values),
+        
+        "\nslot 'dates' ", object@dates,
+        "\nslot 'envDay' ")
+    show(object@envDay)
+        cat("slot 'variables' ",unlist(object@variables))
+  }
+)
+
+
 
 setMethod(f="survival",
           signature = "EcoDay",
@@ -118,7 +136,7 @@ EcoDay <- function(x)
   # Arguments: a list
   # - [[1]] an array [X,Y,Age_Stage_Class]
   # - [[2]] a one day Date class variable 
-  # - [[3]] an raster brick class (X,Y dimension should correspond with the array) with environmental values of the day 
+  # - [[3]] a raster brick class (X,Y dimension should correspond with the array) with environmental values of the day 
   # - [[4]] the vector stage name for each age class (length = the number of age classes)
-new("EcoDay",values=x[[1]],dates=x[[2]],envDay=x[[3]],stages=x[[4]])
+new("EcoDay",values=x[[1]],dates=x[[2]],envDay=x[[3]],stages=x[[4]],variables=x[[5]])
 }

@@ -7,18 +7,20 @@ library(rts)
 
 
 # Read RnetCDF data
-source("dataHandling.R") # functions to handle data (read netCDF, create burning period, aggregate tables)
+#source("dataHandling.R") # functions to handle data (read netCDF, create burning period, aggregate tables)
 source("inference.R") # calculates and sample posterior using data and prior information
 source("dispersionFunctions.R") # calculates and sample posterior using data and prior information
 source("NicheFunctions.R") # calculates and sample posterior using data and prior information
 source("Classes/Generics.R")
 #source("Classes/AbstractModel.R")
-source("Classes/ModelFunction.R")
-source("Classes/Environment.R")
+#source("Classes/ModelFunction.R")
+#source("Classes/Environment.R")
 source("Classes/EnvTimeSerie.R")
 source("Classes/EnvTimeSeries.R")
 source("Classes/ageClassTransition.R")
 source("Classes/EcoDay.R")
+source("Classes/model.R")
+source("Classes/EcoModel.R")
 
 burnin_period = 100
 
@@ -40,8 +42,9 @@ stages <- rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10)
 ED <- EcoDay(list(array(0,dim = c(dim(getValues(Rainf))[1:2],5*10)),
                   
                   as.Date("2001-01-01"),
-                  getDay(EnvData,1),
-                  stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10))
+                  getDay(EnvData,"2001-01-01"),
+                  stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10),
+                  variables=names(getDay(EnvData,"2001-01-01")))
              )
 
 ED1 <- mySetValues(ED,1,"Adult")
@@ -49,6 +52,8 @@ distanceMatrix <- distanceMatrixFromRaster2(getEnvDay(ED))
 landDim <- dim(getArray(ED,NULL))[1:2]
 getDay(EnvData,1)
 a <- as.Date(getDates(EnvData))
+ACtransition <- readRDS("data/ACtranstion")
+
 ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,getDates(Tmean)[1:2],"Bf")
 
 ageClassTransition_numeric(devEnvVar=28,developmentRateLogan,"Bf",stages,c(Adult=10,Egg=10, PhyloL=10,  Pupae=10, StembL=10 ))

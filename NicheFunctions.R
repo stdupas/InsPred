@@ -22,6 +22,13 @@ conquadraticSkewed1 <- function(x, parameters)
   return(y)
 }
 
+constant <- function (x, parameter)
+{
+ values(x) = parameter
+ return(x)
+}
+
+precipitation_survival <- function(x,median_survival_value) (1/2)^((x/median_survival_value)^2)
 
 developmentRateLogan <- function(T, species, life_stage)
 {
