@@ -29,7 +29,7 @@ setGeneric(
 
 setGeneric(
   name = "myAddValues",
-  def = function(object,newValues,Subset) { return(standardGeneric("myAddValues"))})
+  def = function(object,newValues,Subset,Fun) { return(standardGeneric("myAddValues"))})
 
 setGeneric(
   name = "etsDim",

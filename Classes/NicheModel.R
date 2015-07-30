@@ -1,2 +1,0 @@
-setClass("NicheModel",
-         contains = "Model")

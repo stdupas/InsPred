@@ -77,24 +77,28 @@ setMethod(f="mySetValues",
 
 setMethod(f="myAddValues",
           signature = "EcoDay",
-          definition = function(object,newValues,Subset){
+          definition = function(object,newValues,Subset,Fun){
             # object : the EcoDay variable to set
             # newValues : the new values
             # Subset : the part of ecoday to set by new values (age class vector)
             if (((class(newValues)=="numeric")|(class(newValues)=="array"))&(class(Subset)=="character")) {
               if (Subset=="all") object@values = object@values+array(newValues,dim(object@values))
-              if (Subset%in%object@stages) { object@values[,,which(object@stages%in%Subset)] = object@values[,,which(object@stages%in%Subset)] +
-                                               array(newValues,c(dim(object@values)[1:2],length(which(object@stages%in%Subset))))
+              if (Subset%in%object@stages) { object@values[,,which(object@stages%in%Subset)] = 
+                                               do.call(Fun,
+                                                       list(object@values[,,which(object@stages%in%Subset)],
+                                                            array(newValues,c(dim(object@values)[1:2],length(which(object@stages%in%Subset))))
+                                                            )
+                                                       )
               }
             }
             if (class(Subset)=="numeric") Subset <- as.integer(Subset)
             if ((class(newValues)=="array")&(length(Subset)==1)) newValues<-matrix(newValues,nrow=dim(newValues)[1],ncol=dim(newValues)[2])
-            if ((class(newValues)=="matrix")&(length(Subset)==1)&(class(Subset)=="integer")) {
-              object@values[,,Subset] = object@values[,,Subset]+newValues
+            if (((class(newValues)=="matrix")|(class(newValues)=="numeric"))&(length(Subset)==1)&(class(Subset)=="integer")) {
+              object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
             }
             if ((class(newValues)=="array")&(class(Subset)=="integer")&(length(Subset)!=1)) { 
               if (any(dim(newValues)!=c(dim(object@values)[1:2],length(Subset)))) stop("new values array has wrong dimension")
-              object@values[,,Subset] = object@values[,,Subset]+newValues
+              object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
             }
             return(object)
           })
@@ -103,7 +107,7 @@ setMethod(f="recruitment",
           signature = "EcoDay",
           definition = function(object,fecun){
             object@values
-            object <- myAddValues(object,rowSums(object@values[,,which(object@stages=="Adult")]*fecun,dims=2),Subset=1)
+            object <- myAddValues(object,rowSums(object@values[,,which(object@stages=="Adult")]*fecun,dims=2),Subset=1,'+')
             return(object)                         
           }) # between age stages (adtults to egg first age class)
 

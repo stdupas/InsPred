@@ -46,10 +46,13 @@ setMethod(
   definition =  function(object,ecoDay){
     if (length(as.list(object@fun))==1&object@supermodel==FALSE) return (do.call(what = object@fun,
                                                                                  args =list()))
-    if (object@supermodel==FALSE) result <- do.call(what = object@fun,
-                                                   args = list(getEnvDay(ecoDay,object@varName),object@submodel)) else {
+    if (object@supermodel==FALSE) {
+      result <- do.call(what = object@fun,
+                        args = list(getEnvDay(ecoDay,object@varName),unlist(object@submodel)))
+      } else {
                                                      result <- calc(stack(lapply(object@submodel,applyModel,ecoDay)),fun=object@fun)
                                                    }
+    result <- mySetValues(ecoDay,result,object@stages)
     return(result)
   })
 

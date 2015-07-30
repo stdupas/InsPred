@@ -15,7 +15,10 @@ expectedInd.2 <- function(parameters){
   #
   # Variables: 
    parameters = c(fecun=10,
-                  PhyloL.surv.Rainf.median = 0.001,  PhyloL.surv.Rainf.Xmax = 
+                  PhyloL.surv.Rainf.median = 0.001,
+                  disp.D.alpha=100,disp.D.beta=2)
+   
+                  PhyloL.surv.Rainf.Xmax = 
                   r.fecun.Rainf.Xmax=0.0003,r.Rainf.Xopt=0.0001,r.Rainf.Yopt=15,
                   K.Rainf.Xmin=0,K.Rainf.Xmax=0.0003,K.Rainf.Xopt=0.0001,K.Rainf.Yopt=5,
                   K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
@@ -40,7 +43,7 @@ expectedInd.2 <- function(parameters){
   m <- migrationRateMatrix(fatTail1(distanceMatrix,alpha=parameters["disp.D.alpha"],beta=parameters["disp.D.beta"]))
   while (Day < etsDim(EnvData)[[1]][3])
   {
-    if (Day<burnin_period) Current <- myAddValues(Current,1,"Adult")
+    if (Day<burnin_period) Current <- myAddValues(Current,1,41,'+')
     # migration
     Current <- mySetValues(Current,
                            getMigratedMatrix(Current,"Adult",m),

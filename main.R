@@ -52,7 +52,7 @@ distanceMatrix <- distanceMatrixFromRaster2(getEnvDay(ED))
 landDim <- dim(getArray(ED,NULL))[1:2]
 getDay(EnvData,1)
 a <- as.Date(getDates(EnvData))
-ACtransition <- readRDS("data/ACtranstion")
+ACtransition <- read("data/ACtranstion")
 
 ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,getDates(Tmean)[1:2],"Bf")
 
