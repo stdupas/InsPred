@@ -1,5 +1,6 @@
 setwd("/Users/jean-francoissilvain/Documents/marc-fred/forwardKenya")
 setwd("/home/egce/Bureau/Ludivine/forwardKenya/")
+setwd("/home/legs/forwardKenya/")
 setwd("/home/dupas/forwardKenya/")
 library(RNetCDF) # for nc2EnvDataAndRasterStack function (readNetCDF.R script), to read NetCDF formatted data
 library(raster) # library to manage raster format data 
@@ -52,9 +53,10 @@ distanceMatrix <- distanceMatrixFromRaster2(getEnvDay(ED))
 landDim <- dim(getArray(ED,NULL))[1:2]
 getDay(EnvData,1)
 
-ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,getDates(Tmean)[1:2],"Bf")
+#ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,getDates(Tmean)[1:2],"Bf")
+ACtransition <- load("ACtransition.RData")
 
-ageClassTransition_numeric(devEnvVar=28,developmentRateLogan,"Bf",stages=c(Adult=10,Egg=10, PhyloL=10,  Pupae=10, StembL=10 ))
+
 
 function(x) 
 {

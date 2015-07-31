@@ -49,7 +49,8 @@ StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvi
   m <- migrationRateMatrix(fatTail1(distanceMatrix,alpha=parameters["disp.D.alpha"],beta=parameters["disp.D.beta"]))
   while (Day < etsDim(EnvData)[[1]][3])
   {
-    if (Day<burnin_period) Current <- myAddValues(Current,1,41,'+')
+    if (Day<burnin_period) { Current <- myAddValues(Current,1,41,'+')
+                             Current <- myAddValues(Current,1,"PhyloL",'+')
     # migration
     Current <- mySetValues(Current,
                            getMigratedMatrix(Current,"Adult",m),
@@ -57,7 +58,7 @@ StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvi
     #recruitment
     Current <- recruitment(Current,parameters["fecun"])
     #survival
-    Current <- applyModel(survivalPhyloL,Current)
+    Current <- applyModel(EnvironPhyloL,Current)
     K.StembL <- applyModel(KStembL,Current)
     Current <- 
     Day <- Day + 1

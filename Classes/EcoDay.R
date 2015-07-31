@@ -94,9 +94,15 @@ setMethod(f="myAddValues",
             }
             if (class(Subset)=="numeric") Subset <- as.integer(Subset)
             if ((class(newValues)=="array")&(length(Subset)==1)) newValues<-matrix(newValues,nrow=dim(newValues)[1],ncol=dim(newValues)[2])
+            if (class(newValues)=="RasterLayer") newValues = as.matrix(newValues)
             if (((class(newValues)=="matrix")|(class(newValues)=="numeric"))&(length(Subset)==1)&(class(Subset)=="integer")) {
               object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
             }
+                
+                &(length(Subset)==1)&(class(Subset)=="integer")) {
+              object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
+            }
+              
             if ((class(newValues)=="array")&(class(Subset)=="integer")&(length(Subset)!=1)) { 
               if (any(dim(newValues)!=c(dim(object@values)[1:2],length(Subset)))) stop("new values array has wrong dimension")
               object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
