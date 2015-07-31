@@ -79,8 +79,9 @@ setMethod(f="myAddValues",
           signature = "EcoDay",
           definition = function(object,newValues,Subset,Fun){
             # object : the EcoDay variable to set
-            # newValues : the new values
+            # newValues : the new values to combine or 'add' with old values
             # Subset : the part of ecoday to set by new values (age class vector)
+            # Fun : the operator used for combining the old values with the new ones ('+','*','-','/'...)
             if (((class(newValues)=="numeric")|(class(newValues)=="array"))&(class(Subset)=="character")) {
               if (Subset=="all") object@values = object@values+array(newValues,dim(object@values))
               if (Subset%in%object@stages) { object@values[,,which(object@stages%in%Subset)] = 

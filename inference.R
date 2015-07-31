@@ -16,6 +16,8 @@ expectedInd.2 <- function(parameters){
   # Variables: 
    parameters = c(fecun=10,
                   PhyloL.surv.Rainf.median = 0.001,
+                  slope.K.StembL=12000,
+                  r.StembL=0.9,
                   disp.D.alpha=100,disp.D.beta=2)
    
                   PhyloL.surv.Rainf.Xmax = 
@@ -24,8 +26,12 @@ expectedInd.2 <- function(parameters){
                   K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
                   K.Tmax.Xmin=25,K.Tmax.Xmax=35,K.Tmax.Xopt=22,K.Tmax.Yopt=5,
                   disp.D.alpha=100,disp.D.beta=2)
-  survivalPhyloL <- model(varName="Rainf", Fun= precipitation_survival, stages = "PhyloL", submodel=list(median_survival_value=0.00001), supermodel=NA)
-  # initialisation
+EnvironPhyloL <- model(varName="Rainf", Fun= precipitation_survival, stages = "PhyloL", submodel=list(median_survival_value=0.00001), supermodel=NA,environmental=TRUE)
+NonEnvironStembL <- model(varName="StembL", Fun= proportional, stages = "StembL", submodel=list(parameters["r.StembL"]), supermodel=NA,environmental=FALSE)
+KStembL <- model(varName="plantQ", Fun= proportional, stages = "StembL", submodel=list(parameters["slope.K.StembL"]), supermodel=NA, environmental=TRUE)
+StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvironStembL,KStembL), supermodel=TRUE, environmental=TRUE) 
+
+# initialisation
   refStack <- getDay(EnvData,1)
   
   Previous <- mySetValues(EcoDay(list(array(0,dim=c(landDim,5*10)),
@@ -52,6 +58,8 @@ expectedInd.2 <- function(parameters){
     Current <- recruitment(Current,parameters["fecun"])
     #survival
     Current <- applyModel(survivalPhyloL,Current)
+    K.StembL <- applyModel(KStembL,Current)
+    Current <- 
     Day <- Day + 1
   }
 }

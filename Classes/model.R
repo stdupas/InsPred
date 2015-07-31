@@ -1,8 +1,11 @@
+# varName : either stage for non environmental model or environmental variale if environemental model
+
 setClass("model", representation(varName = "character",
                                  fun = "function",
                                  stages = "character",
                                  submodel = "list",
-                                 supermodel = "logical"),
+                                 supermodel = "logical",
+                                 environmental = "logical"),
          prototype(varName = "Undefined",
                    fun = function(x) x,
                    stages="Egg",
@@ -62,10 +65,11 @@ setMethod(f="getVarNames",
             return(object@varName)
           })
 
-model <- function(varName=NA, Fun, stages, submodel, supermodel=NA){
+model <- function(varName=NA, Fun, stages, submodel, supermodel=NA, environmental=TRUE){
   if (is.na(supermodel)) supermodel = all(lapply(submodel,class)=="model")
   if (is.na(varName)&supermodel==FALSE&length(as.list(Fun))!=1) stop ("varName is missing")
   if (is.na(varName)&supermodel==FALSE&length(as.list(Fun))==1) varName = "no argument"
   if (is.na(varName)&supermodel==TRUE) varName=as.character(as.factor(unlist(lapply(submodel,getVarNames))))
-  new("model", varName = varName, fun = Fun, stages = stages, submodel = submodel,supermodel = supermodel)
+  #
+  new("model", varName = varName, fun = Fun, stages = stages, submodel = submodel,supermodel = supermodel, environmental=environmental)
 }

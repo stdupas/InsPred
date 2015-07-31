@@ -28,6 +28,46 @@ constant <- function (x, parameter)
  return(x)
 }
 
+proportionalWithMaximum <- function(x, Xmax, Ymax){
+  # Norm reaction for binary environment variable used in an additive response framework
+  #
+  # Args:
+  #   x: proportion of habitat
+  #   Y : value of the reaction norm for x = 1
+  #
+  # Returns: 
+  #   The value of the reaction norm
+  res <- x*Ymax/Xmax*((x<Xmax)&(x>0))
+  return(res)
+}
+
+proportional <- function(x, slope){
+  # Norm reaction for binary environment variable used in an additive response framework
+  #
+  # Args:
+  #   x: proportion of habitat
+  #   Y : value of the reaction norm for x = 1
+  #
+  # Returns: 
+  #   The value of the reaction norm
+  res <- x*slope
+  return(res)
+}
+
+truncate <- function(x, K){
+  # Norm reaction for binary environment variable used in an additive response framework
+  #
+  # Args:
+  #   x: values to truncate
+  #   K : carrying capacity
+  #
+  # Returns: 
+  #   truncated values
+  res <- x*(x<K)+K*(x>=K)
+  return(res)
+}
+
+
 precipitation_survival <- function(x,median_survival_value) (1/2)^((x/median_survival_value)^2)
 
 developmentRateLogan <- function(T, species, life_stage)
