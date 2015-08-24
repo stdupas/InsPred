@@ -43,7 +43,16 @@ setMethod(
 )
 
 
-
+EcoModel <- function(model, ecoDay)
+{
+  new("EcoModel",
+      varName = model@varName,
+      fun = model@fun,
+      stages = model@stages,
+      submodel = model@submodel,
+      supermodel = model@supermodel,
+      ecoDay=ecoDay)
+}
 
 
 

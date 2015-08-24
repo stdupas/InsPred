@@ -18,6 +18,7 @@ expectedInd.2 <- function(parameters){
                   PhyloL.surv.Rainf.median = 0.001,
                   slope.K.StembL=12000,
                   r.StembL=0.9,
+                  survival=0.9,
                   disp.D.alpha=100,disp.D.beta=2)
    
                   PhyloL.surv.Rainf.Xmax = 
@@ -28,8 +29,10 @@ expectedInd.2 <- function(parameters){
                   disp.D.alpha=100,disp.D.beta=2)
 EnvironPhyloL <- model(varName="Rainf", Fun= precipitation_survival, stages = "PhyloL", submodel=list(median_survival_value=0.00001), supermodel=NA,environmental=TRUE)
 NonEnvironStembL <- model(varName="StembL", Fun= proportional, stages = "StembL", submodel=list(parameters["r.StembL"]), supermodel=NA,environmental=FALSE)
+survival <- model(varName="All", Fun= proportional, stages = c("Eggs","PhyloL","StembL","Pupae","Adult"), submodel=list(parameters["survival"]), supermodel=NA,environmental=FALSE)
 KStembL <- model(varName="plantQ", Fun= proportional, stages = "StembL", submodel=list(parameters["slope.K.StembL"]), supermodel=NA, environmental=TRUE)
 StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvironStembL,KStembL), supermodel=TRUE, environmental=TRUE) 
+Essai <- model(varName=NA, Fun='+', stages="StembL", submodel=list(NonEnvironStembL,KStembL), supermodel=TRUE, environmental=TRUE) 
 
 # initialisation
   refStack <- getDay(EnvData,1)
@@ -50,7 +53,8 @@ StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvi
   while (Day < etsDim(EnvData)[[1]][3])
   {
     if (Day<burnin_period) { Current <- myOperation(Current,1,41,'+')
-                             Current <- myOperation(Current,1,"PhyloL",'+')}
+                             Current <- myOperation(Current,1,"PhyloL",'+')
+                             Current <- myOperation(Current,1,"StembL",'+') }
     # migration
     Current <- mySetValues(Current,
                            getMigratedMatrix(Current,"Adult",m),
@@ -58,9 +62,9 @@ StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvi
     #recruitment
     Current <- recruitment(Current,parameters["fecun"])
     #survival
-    Current <- applyModel(EnvironPhyloL,Current)
+    Current <- applyModel(EnvironPhyloLCurrent)
     K.StembL <- applyModel(KStembL,Current)
-    Current <- 
+    Current <- applyModel(StembL,Current)
     Day <- Day + 1
   }
 }

@@ -32,8 +32,8 @@ setGeneric(
   def = function(object,newValues,Subset,Fun) { return(standardGeneric("myAddValues"))})
 
 setGeneric(
-  name = "myOperation ",
-  def = function(object1,object2,Subset,Fun) { return(standardGeneric("myOperation "))})
+  name = "myOperation",
+  def = function(object1,object2,Subset,Fun) { return(standardGeneric("myOperation"))})
 
 setGeneric(
   name = "etsDim",

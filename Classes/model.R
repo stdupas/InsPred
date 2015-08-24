@@ -59,7 +59,7 @@ setMethod(
       } else {
                                                      result <- calc(stack(lapply(object@submodel,applyModel,ecoDay)),fun=object@fun)
                                                    }
-    result <- myOperation(ecoDay,result,object@stages,"*")
+    #result <- myOperation(ecoDay,result,object@stages,"*")
     return(result)
   })
 
