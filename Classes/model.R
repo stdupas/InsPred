@@ -1,5 +1,9 @@
 # varName : either stage for non environmental model or environmental variale if environemental model
-
+# fun = function to combine submodels
+# stages = stages concerned by the model
+# submodel = list of submodels (class model or parameter values)
+# supermodel = whether the model is a list of model (TRUE) or a model (FALSE)
+# environemental = whether the model depends on environmental values
 setClass("model", representation(varName = "character",
                                  fun = "function",
                                  stages = "character",
@@ -55,7 +59,7 @@ setMethod(
       } else {
                                                      result <- calc(stack(lapply(object@submodel,applyModel,ecoDay)),fun=object@fun)
                                                    }
-    result <- myAddValues(ecoDay,result,object@stages,"*")
+    result <- myOperation(ecoDay,result,object@stages,"*")
     return(result)
   })
 

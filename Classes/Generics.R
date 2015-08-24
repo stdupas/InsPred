@@ -9,7 +9,7 @@ setGeneric(
 
 setGeneric(
   name = "getArray",
-  def = function(object1,object2) { return(standardGeneric("getArray"))})
+  def = function(object1,Subset) { return(standardGeneric("getArray"))})
 
 setGeneric(
   name = "getMigratedMatrix",
@@ -30,6 +30,10 @@ setGeneric(
 setGeneric(
   name = "myAddValues",
   def = function(object,newValues,Subset,Fun) { return(standardGeneric("myAddValues"))})
+
+setGeneric(
+  name = "myOperation ",
+  def = function(object1,object2,Subset,Fun) { return(standardGeneric("myOperation "))})
 
 setGeneric(
   name = "etsDim",
