@@ -1,6 +1,6 @@
 setClass("EcoDay",
          representation(values = "array",dates = "Date", envDay = "RasterBrick", stages="character",variables="character"),
-         prototype(values = plot(hist(round(rgamma(20,5,2))),main="ecol data age classes",breaks=11,xlab="age")),
+         prototype(values = plot(hist(round(rgamma(20,5,2))),main="ecol data age classes",xlab="age")),
          validity = function(object){
            ifelse(length(object@dates)!=1, 
                   stop("EcoDay has to contain one and only one date"),
@@ -14,12 +14,12 @@ setClass("EcoDay",
          }
 )
 
-setMethod(f="getArray",
+setMethod(f="getValues",
           signature = "EcoDay",
-          definition = function(object1,Subset){ # object2 is an age class
-            if(class(Subset)=="character") Subset = which(getStage(object1)%in%Subset)
-            if (is.null(Subset)) return(object1@values) else {
-              object1@values[,,Subset]
+          definition = function(object,Subset=NULL){ # object2 is an age class
+            if(class(Subset)=="character") Subset = which(getStage(object)%in%Subset)
+            if (is.null(Subset)) return(object@values) else {
+              object@values[,,Subset]
             }
           })
 
@@ -35,11 +35,17 @@ setMethod(f="getMigratedMatrix",
           # This methode is used in Inference
           definition = function(object1,object2,object3){
             if ((class(object1)!= "EcoDay")|(class(object2)!= "character"))stop(" either object1 is not an 'EcoDay' or object2 is not a 'character' ! ")
-            matrix(values(raster(getArray(object1,which(getStage(object1)==object2)[1])))%*%object3,nrow=landDim[1],ncol=landDim[2],byrow=TRUE)
+            matrix(values(raster(getValues(object1,which(getStage(object1)==object2)[1])))%*%object3,nrow=landDim[1],ncol=landDim[2],byrow=TRUE)
+          })
+
+setMethod(f="getDates",
+          signature = "EcoDay",
+          definition = function(object){
+            return(object@dates)
           })
 
 
-setMethod(f="getEnvDay",
+setMethod(f="getEnv",
           signature = "EcoDay",
           definition = function(object1,object2=NULL){
             ifelse (is.null(object2), return(object1@envDay), return(object1@envDay[[object2]]))
@@ -99,6 +105,14 @@ setMethod(f="myOperation",
                              object2@values[,,Subset])
                 )
             }
+            if (class(object2)=="ageClassTransition") {
+              object1@values[,,Subset] = 
+                do.call(Fun,
+                        list(object1@values[,,Subset],
+                             object2@values[,,Subset])
+                )
+            }
+            
             return(object1)
           })
           

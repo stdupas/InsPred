@@ -1,9 +1,4 @@
-inference <- function(parameters, EnvData, parentSize, recoverySize)
-{
-  
-}
-
-expectedInd.2 <- function(parameters){
+expectedInd <- function(parameters){
   # Fonction qui calcule le nombre d'individus attendus
   # Hypothèse : 
   # Temps de développement : réponse linéaire décroissante au Tmin
@@ -27,24 +22,18 @@ expectedInd.2 <- function(parameters){
                   K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
                   K.Tmax.Xmin=25,K.Tmax.Xmax=35,K.Tmax.Xopt=22,K.Tmax.Yopt=5,
                   disp.D.alpha=100,disp.D.beta=2)
-EnvironPhyloL <- model(varName="Rainf", Fun= precipitation_survival, stages = "PhyloL", submodel=list(median_survival_value=0.00001), supermodel=NA,environmental=TRUE)
+EnvironPhyloL <- model(varName="Rainf", Fun= precipitation_survival, stages = "PhyloL", submodel=list(median_survival_value=0.00001), supermodel=FALSE,environmental=TRUE)
 NonEnvironStembL <- model(varName="StembL", Fun= proportional, stages = "StembL", submodel=list(parameters["r.StembL"]), supermodel=NA,environmental=FALSE)
 survival <- model(varName="All", Fun= proportional, stages = c("Eggs","PhyloL","StembL","Pupae","Adult"), submodel=list(parameters["survival"]), supermodel=NA,environmental=FALSE)
 KStembL <- model(varName="plantQ", Fun= proportional, stages = "StembL", submodel=list(parameters["slope.K.StembL"]), supermodel=NA, environmental=TRUE)
 StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvironStembL,KStembL), supermodel=TRUE, environmental=TRUE) 
-Essai <- model(varName=NA, Fun='+', stages="StembL", submodel=list(NonEnvironStembL,KStembL), supermodel=TRUE, environmental=TRUE) 
 
 # initialisation
-  refStack <- getDay(EnvData,1)
+  refStack <- getDays(EnvData,1)
   
-  Previous <- mySetValues(EcoDay(list(array(0,dim=c(landDim,5*10)),
-                                     as.Date("2001-01-01"),getDay(EnvData,1),
-                                     stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10), 
-                                     variables=getVarNames(EnvData))),
-                                 array(1,c(landDim,10)),"Adult")
  # burn-in 
   Current <- EcoDay(list(array(0,dim=c(landDim,5*10)),
-                      as.Date("2001-01-01"),getDay(EnvData,1),
+                      as.Date("2001-01-01"),getDays(EnvData,1),
                       stages=rep(c("Egg","PhyloL","StembL","Pupae","Adult"),each=10),
                       variables = getVarNames(EnvData)
                       ))  
@@ -62,8 +51,8 @@ Essai <- model(varName=NA, Fun='+', stages="StembL", submodel=list(NonEnvironSte
     #recruitment
     Current <- recruitment(Current,parameters["fecun"])
     #survival
-    Current <- applyModel(EnvironPhyloLCurrent)
-    K.StembL <- applyModel(KStembL,Current)
+    #Current <- applyModel(EnvironPhyloLCurrent)
+    Current <- applyModel(EnvironPhyloL,Current)
     Current <- applyModel(StembL,Current)
     Day <- Day + 1
   }

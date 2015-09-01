@@ -38,7 +38,7 @@ setMethod("getVarNames",
             return(unlist(lapply(object@values,getVarNames)))
           })
 
-setMethod(f="getDay",
+setMethod(f="getDays",
           signature = "EnvTimeSeries",
           definition = function(object1,object2){
             if (class(object2)=="character") object2 <- as.Date(object2)
@@ -50,7 +50,7 @@ setMethod(f="getDay",
             return(tmp)
           })
 
-setMethod("getEnvTimeSerie",
+setMethod("getEnv",
           signature = "EnvTimeSeries",
           function(object1,object2){
             return(getValues(object1)[[which(getVarNames(object1)==object2)]])
