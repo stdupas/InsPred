@@ -41,7 +41,7 @@ setMethod(f="getDates",
             return(object@dates)
           })
 
-setMethod(f="getDay",
+setMethod(f="getDays",
           signature = "EnvTimeSerie",
           definition = function(object1,object2){
             tmp <-brick(lapply(lapply(getValues(object1),getValues),function(x) subset(x,object2)))
