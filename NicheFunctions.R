@@ -165,7 +165,7 @@ plantQuality <- function(env_time_series,variable,number_of_days)
   # Adds a plant quality layer onto Environemental Time serie
   #
   #
-  env_time_serie <- getEnvTimeSerie(env_time_series,variable)
+  env_time_serie <- getEnv(env_time_series,variable)
   env_time_array <- as.array(getValues(env_time_serie))
   env_time_array_nb_day_added <- env_time_array[,,c(rep(1,number_of_days-1),1:dim(env_time_array)[3])]
   plant_quality_array <- as.array(getValues(env_time_serie))
