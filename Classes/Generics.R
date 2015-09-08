@@ -78,9 +78,9 @@ setGeneric(
   name = "getParameters",
   def = function(object) { return(standardGeneric("getParameters"))})
 
-setGeneric(
-  name = "transition",
-  def = function(object) { return(standardGeneric("transition"))})
+#setGeneric(
+#  name = "transition",
+#  def = function(object,...) { return(standardGeneric("transition"))})
 
 setGeneric(
   name = "recruitment",

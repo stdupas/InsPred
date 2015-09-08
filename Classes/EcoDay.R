@@ -82,6 +82,45 @@ setMethod(f="mySetValues",
             return(object)
           })
 
+setMethod(f="myAddValues",
+          signature = "EcoDay",
+          definition = function(object,newValues,Subset,Fun){
+            # object : the EcoDay variable to set
+            # newValues : the new values to combine or 'add' with old values
+            # Subset : the part of ecoday to set by new values (age class vector)
+            # Fun : the operator used for combining the old values with the new ones ('+','*','-','/'...)
+            if (((class(newValues)=="numeric")|(class(newValues)=="array"))&(class(Subset)=="character")) {
+              if (Subset=="all") object@values = object@values+array(newValues,dim(object@values))
+              if (Subset%in%object@stages) { object@values[,,which(object@stages%in%Subset)] = 
+                                               do.call(Fun,
+                                                       list(object@values[,,which(object@stages%in%Subset)],
+                                                            array(newValues,c(dim(object@values)[1:2],length(which(object@stages%in%Subset))))
+                                                            )
+                                                       )
+              }
+            }
+            if (class(Subset)=="numeric") Subset <- as.integer(Subset)
+            if ((class(newValues)=="array")&(length(Subset)==1)) newValues<-matrix(newValues,nrow=dim(newValues)[1],ncol=dim(newValues)[2])
+            if (((class(newValues)=="matrix")|(class(newValues)=="numeric"))&(length(Subset)==1)&(class(Subset)=="integer")) {
+              object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
+            }
+            if ((class(newValues)=="array")&(class(Subset)=="integer")&(length(Subset)!=1)) { 
+              if (any(dim(newValues)!=c(dim(object@values)[1:2],length(Subset)))) stop("new values array has wrong dimension")
+              object@values[,,Subset] = do.call(Fun,list(object@values[,,Subset],newValues))
+            }
+            if (class(object2)=="ageClassTransition") {
+              nb_stages <- length(getStage(object))
+              ClassBefore = c(nb_stages,1:(nb_stages-1))
+              object1@values[,,Subset] = 
+                do.call(Fun,
+                        list(object1@values[,,Subset],
+                             object2@values[,,Subset])
+                )
+            }
+            
+            return(object1)
+          })
+
 setMethod(f="myOperation",
           signature = "EcoDay",
           definition = function(object1,object2,Subset,Fun){
@@ -106,7 +145,9 @@ setMethod(f="myOperation",
                 )
             }
             if (class(object2)=="ageClassTransition") {
-              object1@values[,,Subset] = 
+              nb_stages <- length(getStage(object))
+              ClassBefore = c(nb_stages,1:(nb_stages-1))
+              object1@values[,,getValues(object2)] = 
                 do.call(Fun,
                         list(object1@values[,,Subset],
                              object2@values[,,Subset])
@@ -115,7 +156,7 @@ setMethod(f="myOperation",
             
             return(object1)
           })
-          
+
 
 setMethod(f="recruitment",
           signature = "EcoDay",

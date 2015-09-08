@@ -72,32 +72,34 @@ precipitation_survival <- function(x,median_survival_value) (1/2)^((x/median_sur
 
 developmentRateLogan <- function(T, species, life_stage)
 {
-  parameters <- switch (species,
-                        Bf = switch (life_stage,
-                                     Egg = c(Y=0.0093744,Tmax=31.8519816,rho=0.1165808,V=2.3537414),
-                                     PhyloL = c(Y=3*0.001,Tmax=31.229,rho=0.116,V=1.654),
-                                     StembL = c(Y=1.5*0.001,Tmax=31.229,rho=0.116,V=1.654),
-                                     Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=5.227),
-                                     Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
-                        ),
-                        Sc = switch (life_stage,
-                                     Egg = c(Y=0.010,Tmax=31.93,rho=0.110,V=1.786),
-                                     PhyloL = c(Y=3*0.002,Tmax=35.79,rho=0.150,V=5.695),
-                                     StembL = c(Y=1.5*0.002,Tmax=35.79,rho=0.150,V=5.695),
-                                     Pupae = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427),
-                                     Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
-                        ),
-                        Cp = switch (life_stage,
-                                     Egg = c(Y=0.015,Tmax=38.92,rho=0.155,V=5.766),
-                                     PhyloL = c(Y=3*0.003,Tmax=37.58,rho=0.17,V=5.51),
-                                     StembL = c(Y=1.5*0.003,Tmax=37.58,rho=0.17,V=5.51),
-                                     Pupae = c(Y=0.02,Tmax=38.04,rho=0.17,V=5.65),
-                                     Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
-                        )
-  )
-  r <-  parameters["Y"]*(exp(parameters["rho"]*T)-exp(parameters["rho"]*parameters["Tmax"]-((parameters["Tmax"]-T)/parameters["V"])))
- (r>0)*r+(r<=0)*1E-5
-}
+  if (species %in% c("Busseola_fusca","Sesamia_calamistis","Chilo_partellus")){
+    parameters <- switch (species,
+                         Busseola_fusca = switch (life_stage,
+                                                  Egg = c(Y=0.0093744,Tmax=31.8519816,rho=0.1165808,V=2.3537414),
+                                                  PhyloL = c(Y=3*0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                                  StembL = c(Y=1.5*0.001,Tmax=31.229,rho=0.116,V=1.654),
+                                                  Pupae = c(Y=0.006,Tmax=33.039,rho=0.164,V=5.227),
+                                                  Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
+                         ),
+                         Sesamia_calamistis = switch (life_stage,
+                                                      Egg = c(Y=0.010,Tmax=31.93,rho=0.110,V=1.786),
+                                                      PhyloL = c(Y=3*0.002,Tmax=35.79,rho=0.150,V=5.695),
+                                                      StembL = c(Y=1.5*0.002,Tmax=35.79,rho=0.150,V=5.695),
+                                                      Pupae = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427),
+                                                      Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
+                         ),
+                         Chilo_partellus = switch (life_stage,
+                                                   Egg = c(Y=0.015,Tmax=38.92,rho=0.155,V=5.766),
+                                                   PhyloL = c(Y=3*0.003,Tmax=37.58,rho=0.17,V=5.51),
+                                                   StembL = c(Y=1.5*0.003,Tmax=37.58,rho=0.17,V=5.51),
+                                                   Pupae = c(Y=0.02,Tmax=38.04,rho=0.17,V=5.65),
+                                                   Adult = c(Y=0.009,Tmax=35.09,rho=0.170,V=5.427)
+                         )
+    )
+    r <-  parameters["Y"]*(exp(parameters["rho"]*T)-exp(parameters["rho"]*parameters["Tmax"]-((parameters["Tmax"]-T)/parameters["V"])))
+    (r>0)*r+(r<=0)*1E-5
+    } else stop("wrong species name")
+  }
 
 ######## TO BE REMOVED ###################
 developmentTime <- function(developmentRate) ######## TO BE REMOVED ###################

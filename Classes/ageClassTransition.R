@@ -21,6 +21,12 @@ setMethod(f="getValues",
             if (is.null(dates)) return(object@transition) else return(object@transition[,,dates,,])
           })
 
+#setMethod(f="transition",
+#          signature = "ageClassTransition",
+#          definition = function(object,dates=NULL){
+#            if (is.null(dates)) return(object@transition) else return(object@transition[,,dates,,])
+#          })
+
 
 ageClassTransition_numeric <- function(devEnvVar,developmentRateFunction,species,stages,number_of_age_class_per_stage)
 {
@@ -48,16 +54,16 @@ mat[mat[,2]<0,2] <- 0
 mat
 }
 
-#envtimeserie=Tmean; developmentRateFunction=developmentRateLogan; dates=getDates(Tmean); Transition=NULL
+envtimeserie=Tmean; developmentRateFunction=developmentRateLogan; dates=getDates(Tmean)[1:2]; Transition=NULL;species="Busseola_fusca"
 
-ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, stages=NULL, dates=NULL, Transition=NULL)
+ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, stages=NULL, species = "Busseola_fusca", dates=NULL, Transition=NULL)
   # Arguments :
   # (envtimeserie, developmentRateFunction, stages, dates), or 
   # (transition, stages, dates)
 {
   # Constructor of age class transition array
   # slots : 
-  # Transition = array of transition : dimensions X, Y, Date, Classe d'age, Classe d'age du jour suivant, probabilité associée
+  # Transition = array of transition : dimensions X, Y, Date, Classe d'age, Classe d'age supérieure du jour suivant, probabilité associée
   # stages
   # dates = class date
 #   developmentRateLogan(getValues(Tmean),"Bf","Egg")
@@ -72,7 +78,7 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       if (class(dates)=="Date"){
         dates=which(getDates(envtimeserie)%in%dates)
       }
-      
+      datesnumerical <- 1:length(dates)
       ### Initialize 
       ageclassTransition <- array(0, dim = c(dim(getValues(envtimeserie)),length(stages),2))
       # to put in a method of EcoDay
@@ -85,12 +91,12 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       names(number_of_age_class_per_stage) <- levels(as.factor(stages))
       
       ### Fill the array for transition between substages of eggs/larvae/adult
-      devEnVar <- array(as.array(getValues(envtimeserie))[,,dates],dim=c(dim(getValues(envtimeserie))[1:2],length(dates)))
+      devEnVar <- array(as.array(getValues(envtimeserie))[,,datesnumerical],dim=c(dim(getValues(envtimeserie))[1:2],length(dates)))
       Transition <- array(0,dim=c(dim(getValues(envtimeserie))[1],
                                   dim(getValues(envtimeserie))[2],
                                   length(dates),length(stages),2),
                           dimnames=list(1:24,1:24,
-                                        dates,stages,c("AC","nextDayAC"))
+                                        dates,stages,c("NextDayUpperStage","AssociatedProb"))
       )
       negatif <- data.frame(X=NA,Y=NA,i_date=NA);count=1
       for (X in 1:dim(getValues(envtimeserie))[1]){ # X <- 1 
@@ -103,7 +109,7 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       }
     } else stop("missing arguments")
   }
-new("ageClassTransition",transition=Transition,stages=stages,dates=dates) #,extent(getValues(envtimeserie)),res
+new("ageClassTransition",transition=Transition,stages=stages,dates=as.character(getDates(envtimeserie)[dates])) #,extent(getValues(envtimeserie)),res
 }
 
 # note : we can maybe use exponential distribution to evaluate the probability distribution of age class transition for each day an deme
