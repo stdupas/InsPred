@@ -53,7 +53,10 @@ distanceMatrix <- distanceMatrixFromRaster2(getEnv(ED))
 landDim <- dim(getValues(ED,NULL))[1:2]
 getDays(EnvData,1)
 
-#ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,getDates(Tmean))
+#ACtransition <- ageClassTransition(envtimeserie=Tmean, developmentRateFunction=developmentRateLogan, stages=stages,species="Busseola_fusca",dates=getDates(Tmean)[1:2], Transition=NULL)
+# saveRDS(AC)
+#ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,species="Busseola_fusca", getDates(Tmean)[1:2])
+#ACtransition <- ageClassTransition(Tmean,developmentRateLogan, stages,species="Busseola_fusca", getDates(Tmean))
 # saveRDS(ACtransition,"ACtransition.rds")
 ACtransition <- readRDS("ACtransition.rds")
 
