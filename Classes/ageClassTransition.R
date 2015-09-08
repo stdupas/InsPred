@@ -48,7 +48,7 @@ mat[mat[,2]<0,2] <- 0
 mat
 }
 
-envtimeserie=Tmean; developmentRateFunction=developmentRateLogan; dates=getDates(Tmean); Transition=NULL
+#envtimeserie=Tmean; developmentRateFunction=developmentRateLogan; dates=getDates(Tmean); Transition=NULL
 
 ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, stages=NULL, dates=NULL, Transition=NULL)
   # Arguments :
