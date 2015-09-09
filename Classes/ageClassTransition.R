@@ -98,7 +98,8 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       names(number_of_age_class_per_stage) <- levels(as.factor(stages))
       
       ### Fill the array for transition between substages of eggs/larvae/adult
-      devEnVar <- array(as.array(getValues(envtimeserie))[,,datesnumbers],dim=c(dim(getValues(envtimeserie))[1:2],length(dates)))
+      devEnVar <- array(as.array(getValues(envtimeserie))[,,datesnumbers],
+                        dim=c(dim(getValues(envtimeserie))[1:2],length(dates)))
       Transition <- array(0,dim=c(dim(getValues(envtimeserie))[1],
                                   dim(getValues(envtimeserie))[2],
                                   length(dates),length(stages),2),
