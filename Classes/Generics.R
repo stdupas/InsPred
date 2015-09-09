@@ -20,6 +20,10 @@ setGeneric(
   def = function(object,...) { return(standardGeneric("getValues"))})
 
 setGeneric(
+  name = "mySubset",
+  def = function(object,Subset) { return(standardGeneric("getValues"))})
+
+setGeneric(
   name = "getStage",
   def = function(object) { return(standardGeneric("getStage"))})
 

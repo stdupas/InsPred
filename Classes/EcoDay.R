@@ -111,7 +111,7 @@ setMethod(f="myAddValues",
             if (class(object2)=="ageClassTransition") {
               nb_stages <- length(getStage(object))
               ClassBefore = c(nb_stages,1:(nb_stages-1))
-              object1@values[,,Subset] = 
+              object1@values[,,onject2] = 
                 do.call(Fun,
                         list(object1@values[,,Subset],
                              object2@values[,,Subset])
@@ -125,7 +125,7 @@ setMethod(f="myOperation",
           signature = "EcoDay",
           definition = function(object1,object2,Subset,Fun){
             # object1 : the EcoDay variable to set
-            # object2 : the other object to do the myOperation with
+            # object2 : the other object to do the myOperation with (can be numeric, raster, array, Ecoday, ageClassTransition)
             # Subset : the part of ecoday to set by object2 (age class vector)
             # Fun : the operator used for combining the two objects ('+','*','-','/'...)
             # 
@@ -145,9 +145,11 @@ setMethod(f="myOperation",
                 )
             }
             if (class(object2)=="ageClassTransition") {
+              if getDates(object2)!=getDates(object1) stop("dates not corresponding in EcoDay and ageClassTransition objects for myOperation method")
               nb_stages <- length(getStage(object))
               ClassBefore = c(nb_stages,1:(nb_stages-1))
-              object1@values[,,getValues(object2)] = 
+              transition <- getValues(object2)[,,getDates(object1),,"NextDayUpperStage"]
+              object1@values[,,] <- getValues()
                 do.call(Fun,
                         list(object1@values[,,Subset],
                              object2@values[,,Subset])

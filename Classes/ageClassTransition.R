@@ -1,10 +1,10 @@
 setClass("ageClassTransition",
-         slots=c(transition = "array", stages="character", dates="character"),
+         slots=c(transition = "array", stages="character", dates="Date"),
          #prototype(transition = plot(raster(matrix(c(0.1,0.9,0,0,0,0,0,0.2,0.8,0,0,0,0,0,.5,.5,0,0,0,0,0,0.8,0.2,0,0,0,0,0,.9,.1,0,0,0,0,0,.1),nrow=6,ncol=6,byrow=TRUE)))),
          validity = function(object){
            # transtion = array dim(number of X, number of Y, number of dates, number of age classes, number of age classes)
            if (dim(object@transition)[3]!=length(object@dates)) stop("third dimension of values array is not equal to number of dates")
-           if (dimnames(object@transition)[[3]]!=dates) stop("slot transition array third dimension colnames is not equal to slot dates")
+           if (dimnames(object@transition)[[3]]!=as.character(object@dates)) stop("slot transition array third dimension colnames is not equal to slot dates")
            #if ((dim(transition)[4]!=length(stages))|(dim(transition)[5]!=length(stages))) stop("fourth and/or fifth dimension of transiton array does not have the same length as stages vector")
          }
 )
@@ -20,6 +20,16 @@ setMethod(f="getValues",
           definition = function(object,dates=NULL){
             if (is.null(dates)) return(object@transition) else return(object@transition[,,dates,,])
           })
+
+setMethod(f="mySubset",
+          signature = "ageClassTransition",
+          definition = function(object,Subset){
+            if (class(Subset) == "Date") {
+              if (Subset%in%getDates(object)) object@transition <- object@transition[,,as.character(Subset),,]} else {
+                return(object);warning("Subset is not class Date")
+              }
+            }
+          )
 
 #setMethod(f="transition",
 #          signature = "ageClassTransition",
@@ -74,11 +84,8 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       # if none of the other arguments is null
     {
       ### Formatting dates
-      if (class(dates)=="character") {dates = as.Date(dates)}
-      if (class(dates)=="Date"){
-        dates=which(getDates(envtimeserie)%in%dates)
-      }
-      datesnumerical <- 1:length(dates)
+      if (class(dates)=="character") dates <- as.Date(dates)
+      if (class(dates)=="Date") datesnumbers <- which(getDates(envtimeserie)%in%dates) # datesnumbers is the layer numbers of the dates in the envtimeserie
       ### Initialize 
       ageclassTransition <- array(0, dim = c(dim(getValues(envtimeserie)),length(stages),2))
       # to put in a method of EcoDay
@@ -91,12 +98,12 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       names(number_of_age_class_per_stage) <- levels(as.factor(stages))
       
       ### Fill the array for transition between substages of eggs/larvae/adult
-      devEnVar <- array(as.array(getValues(envtimeserie))[,,datesnumerical],dim=c(dim(getValues(envtimeserie))[1:2],length(dates)))
+      devEnVar <- array(as.array(getValues(envtimeserie))[,,datesnumbers],dim=c(dim(getValues(envtimeserie))[1:2],length(dates)))
       Transition <- array(0,dim=c(dim(getValues(envtimeserie))[1],
                                   dim(getValues(envtimeserie))[2],
                                   length(dates),length(stages),2),
                           dimnames=list(1:24,1:24,
-                                        dates,stages,c("NextDayUpperStage","AssociatedProb"))
+                                        as.character(dates),stages,c("NextDayUpperStage","AssociatedProb"))
       )
       negatif <- data.frame(X=NA,Y=NA,i_date=NA);count=1
       for (X in 1:dim(getValues(envtimeserie))[1]){ # X <- 1 
@@ -109,7 +116,7 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       }
     } else stop("missing arguments")
   }
-new("ageClassTransition",transition=Transition,stages=stages,dates=as.character(getDates(envtimeserie)[dates])) #,extent(getValues(envtimeserie)),res
+new("ageClassTransition",transition=Transition,stages=stages,dates=dates)) #,extent(getValues(envtimeserie)),res
 }
 
 # note : we can maybe use exponential distribution to evaluate the probability distribution of age class transition for each day an deme
