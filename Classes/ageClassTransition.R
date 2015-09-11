@@ -12,23 +12,30 @@ setClass("ageClassTransition",
 setMethod(f="getDates",
           signature = "ageClassTransition",
           definition = function(object){
+            # arguments : ageClassTransition and the dates that have to be extracted from the array
+            # value: slot dates value
             return(object@dates)
           })
 
 setMethod(f="getValues",
           signature = "ageClassTransition",
           definition = function(object,dates=NULL){
-            if (is.null(dates)) return(object@transition) else return(object@transition[,,dates,,])
+            # arguments : ageClassTransition and the dates that have to be extracted from the array
+            # value: ageClassTransition array with all the dates if argument dates is NULL (default) or selected dates 
+            if (is.null(dates)) return(object@transition) else if (class(dates)=="Date") return(object@transition[,,as.character(dates),,]) else stop("wrong class for dates argument. It should be 'Date'")
           })
 
 setMethod(f="mySubset",
           signature = "ageClassTransition",
           definition = function(object,Subset){
             if (class(Subset) == "Date") {
-              if (Subset%in%getDates(object)) object@transition <- object@transition[,,as.character(Subset),,]} else {
-                return(object);warning("Subset is not class Date")
+              if (Subset%in%getDates(object)) {object@transition <- getValues(object)[,,as.character(Subset),,]
+                                               object@dates <- Subset
+                                               } else stop("Subset is not along the dates present in ageClassTansition object") } else {
+                warning("Subset is not class Date, whole ageClassTransition object is returned")
               }
-            }
+            return(object)
+          }
           )
 
 #setMethod(f="transition",
@@ -64,7 +71,7 @@ mat[mat[,2]<0,2] <- 0
 mat
 }
 
-envtimeserie=Tmean; developmentRateFunction=developmentRateLogan; dates=getDates(Tmean)[1:2]; Transition=NULL;species="Busseola_fusca"
+#envtimeserie=Tmean; developmentRateFunction=developmentRateLogan; dates=getDates(Tmean)[1:2]; Transition=NULL;species="Busseola_fusca"
 
 ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, stages=NULL, species = "Busseola_fusca", dates=NULL, Transition=NULL)
   # Arguments :
@@ -117,7 +124,7 @@ ageClassTransition <- function(envtimeserie=NULL, developmentRateFunction=NULL, 
       }
     } else stop("missing arguments")
   }
-new("ageClassTransition",transition=Transition,stages=stages,dates=dates)) #,extent(getValues(envtimeserie)),res
+new("ageClassTransition",transition=Transition,stages=stages,dates=dates) #,extent(getValues(envtimeserie)),res
 }
 
 # note : we can maybe use exponential distribution to evaluate the probability distribution of age class transition for each day an deme

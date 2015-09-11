@@ -16,12 +16,12 @@ expectedInd <- function(parameters){
                   survival=0.9,
                   disp.D.alpha=100,disp.D.beta=2)
    
-                  PhyloL.surv.Rainf.Xmax = 
-                  r.fecun.Rainf.Xmax=0.0003,r.Rainf.Xopt=0.0001,r.Rainf.Yopt=15,
-                  K.Rainf.Xmin=0,K.Rainf.Xmax=0.0003,K.Rainf.Xopt=0.0001,K.Rainf.Yopt=5,
-                  K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
-                  K.Tmax.Xmin=25,K.Tmax.Xmax=35,K.Tmax.Xopt=22,K.Tmax.Yopt=5,
-                  disp.D.alpha=100,disp.D.beta=2)
+#                  PhyloL.surv.Rainf.Xmax = 
+#                  r.fecun.Rainf.Xmax=0.0003,r.Rainf.Xopt=0.0001,r.Rainf.Yopt=15,
+#                  K.Rainf.Xmin=0,K.Rainf.Xmax=0.0003,K.Rainf.Xopt=0.0001,K.Rainf.Yopt=5,
+#                  K.Tminf.Xmin=15,K.Tmin.Xmax=20,K.Tmin.Xopt=25,K.Tmin.Yopt=5,
+#                  K.Tmax.Xmin=25,K.Tmax.Xmax=35,K.Tmax.Xopt=22,K.Tmax.Yopt=5,
+#                  disp.D.alpha=100,disp.D.beta=2)
 EnvironPhyloL <- model(varName="Rainf", Fun= precipitation_survival, stages = "PhyloL", submodel=list(median_survival_value=0.00001), supermodel=FALSE,environmental=TRUE)
 NonEnvironStembL <- model(varName="StembL", Fun= proportional, stages = "StembL", submodel=list(parameters["r.StembL"]), supermodel=NA,environmental=FALSE)
 survival <- model(varName="All", Fun= proportional, stages = c("Eggs","PhyloL","StembL","Pupae","Adult"), submodel=list(parameters["survival"]), supermodel=NA,environmental=FALSE)
@@ -41,9 +41,9 @@ StembL <- model(varName=NA, Fun=truncate, stages="StembL", submodel=list(NonEnvi
   m <- migrationRateMatrix(fatTail1(distanceMatrix,alpha=parameters["disp.D.alpha"],beta=parameters["disp.D.beta"]))
   while (Day < etsDim(EnvData)[[1]][3])
   {
-    if (Day<burnin_period) { Current <- myOperation(Current,1,41,'+')
-                             Current <- myOperation(Current,1,"PhyloL",'+')
-                             Current <- myOperation(Current,1,"StembL",'+') }
+    if (Day<burnin_period) { Current <- myOperation(Current,1,'+',41)
+                             Current <- myOperation(Current,1,'+',"PhyloL")
+                             Current <- myOperation(Current,1,'+',"StembL") }
     # migration
     Current <- mySetValues(Current,
                            getMigratedMatrix(Current,"Adult",m),

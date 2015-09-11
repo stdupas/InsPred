@@ -57,16 +57,16 @@ setMethod(
       if (object@environmental==TRUE) {
         result <- myOperation(ecoDay,
                               getEnv(ecoDay,object@varName)*unlist(object@submodel),
-                              object@stages,
-                              object@fun)
+                              object@fun,
+                              object@stages)
         #result <- do.call(what = object@fun,
         #                  args = list(getEnv(ecoDay,object@varName),unlist(object@submodel)))
         } else {
-          result <- myOperation(ecoDay,object@submodel,object@stages,object@Fun)    }
+          result <- myOperation(ecoDay,object@submodel,object@Fun,object@stages)    }
               #result <- do.call(what = object@fun,
               #                  args = list(getArray(ecoDay,object@stages),unlist(object@submodel)))}
       } else {
-        result <- do.call("myOperation",append(lapply(object@submodel,applyModel,ecoDay),list(object@stages,object@fun)))
+        result <- do.call("myOperation",append(lapply(object@submodel,applyModel,ecoDay),list(object@fun,object@stages)))
                                                        # apply object@fun to the list of submodels values
     }
     #result <- myOperation(ecoDay,result,object@stages,"*")
